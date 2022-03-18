@@ -96,7 +96,7 @@ class Player(
             val isTouchingGround = isTouchingGround()
             moveIfRequired(delta)
 
-            dx = dx.coerceIn(-8f, 8f)
+            dx = dx.coerceIn(-16f, 16f)
             dy = dy.coerceIn(-16f, 16f)
 
             updatePosition(delta)
@@ -136,10 +136,6 @@ class Player(
     private fun moveIfRequired(delta: Float) {
         dx += 64f * delta * horizontalMovement.delta
         dy += 64f * delta * verticalMovement.delta
-
-        if (horizontalMovement == Joystick.Movement.None) {
-            dy /= 2
-        }
 
         if (horizontalMovement == Joystick.Movement.None) {
             dx /= 2f
@@ -199,17 +195,25 @@ class Player(
     fun updatePosition(delta: Float) {
         let {
             val tmp = collisionRect.apply { offset(0f, dy * delta * SPEED) }
-            if (tilemap.collisionTilesIntersecting(tmp).any { it == 1 }) {
-                dy = 0f
-            } else {
-                rect = ImmutableRect(rect.copyOfUnderlyingRect.apply { offset(0f, dy * delta * SPEED) })
+            if (!tilemap.collisionTilesIntersecting(tmp).any { it == 1 }) {
+                rect = ImmutableRect(rect.copyOfUnderlyingRect.apply {
+                    offset(
+                        0f,
+                        dy * delta * SPEED
+                    )
+                })
             }
         }
 
         let {
             val tmp = collisionRect.apply { offset(dx * delta * SPEED, 0f) }
             if (!tilemap.collisionTilesIntersecting(tmp).any { it == 1 }) {
-                rect = ImmutableRect(rect.copyOfUnderlyingRect.apply { offset(dx * delta * SPEED, 0f) })
+                rect = ImmutableRect(rect.copyOfUnderlyingRect.apply {
+                    offset(
+                        dx * delta * SPEED,
+                        0f
+                    )
+                })
             }
         }
     }

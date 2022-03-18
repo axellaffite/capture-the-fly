@@ -21,7 +21,7 @@ class Fly(
     private val playerPosition: () -> Vector2f
 ): Entity, Drawable, AnimatedSprite(context, R.raw.character, "fly") {
     private val speed = tiledMap.tileSize
-    override var rect = ImmutableRect(x, y, tiledMap.tileSize, tiledMap.tileSize)
+    override var rect = ImmutableRect(x, y, x+tiledMap.tileSize, y+tiledMap.tileSize)
 
     private var verticalMovement = Joystick.Movement.None
     private var horizontalMovement = Joystick.Movement.None
