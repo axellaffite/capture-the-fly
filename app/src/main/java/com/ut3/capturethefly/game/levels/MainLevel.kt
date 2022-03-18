@@ -13,7 +13,7 @@ import com.ut3.capturethefly.game.GameView
 import com.ut3.capturethefly.game.drawable.cameras.createTrackingCamera
 import com.ut3.capturethefly.game.logic.Fly
 import com.ut3.capturethefly.game.logic.InputState
-
+import com.ut3.capturethefly.game.logic.isShaking
 
 class MainLevel(
     gameView : GameView
@@ -48,6 +48,7 @@ class MainLevel(
     private var spawnInterval = 3f
     private var lastFly = 0f
     private val flies = mutableListOf<Fly>()
+    private var isShaking = false
 
     private var currentWave = 0
     private var launchNextWave = false
@@ -73,6 +74,7 @@ class MainLevel(
             }
         }
         luminosityLevel = inputState.luminosity
+        isShaking = inputState.isShaking(preferences.accelerationReference)
         Log.d("LUMINOSITY",luminosityLevel.toString())
     }
 
@@ -137,6 +139,15 @@ class MainLevel(
                 player.takeDamage()
             }
         }
+        println("camera :"+camera.gamePosition)
+        if (isShaking && player.power >= 1f ){
+            player.power = 0f
+            flies.forEach {
+                if (it.rect.intersects(camera.gamePosition)) {
+                    it.die()
+                }
+            }
+        }
 
         textOpacity = (textOpacity - (255 / 3) * delta).coerceAtLeast(0f)
     }
@@ -166,9 +177,11 @@ class MainLevel(
             val scaleFactor = ((gameView.width / tilemap.tileSize) / 12f)
             val (pivotX, pivotY) = gameView.width / 2f to gameView.height / 2f
 
+
             canvas.drawColor(Color.parseColor("#34202b"))
 
             canvas.withScale(x = scaleFactor, y = scaleFactor, pivotX = pivotX, pivotY = pivotY) {
+
                 withCamera(camera) { canvas, paint ->
                     canvas.withClip(tilemap.rect.copyOfUnderlyingRect) {
                         canvas.drawColor(Color.BLUE)
