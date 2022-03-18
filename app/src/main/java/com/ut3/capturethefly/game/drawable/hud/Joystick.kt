@@ -13,7 +13,7 @@ import com.ut3.capturethefly.game.logic.InputState
 
 class Joystick(screenSize: RectF, context: Context) : Drawable, Entity {
 
-    enum class Movement { Left, Right,Up,Down, None }
+    enum class Movement(val delta: Float) { Left(-1f), Right(1f), Up(-1f), Down(1f), None(0f) }
 
     private val bitmap: Bitmap = context.loadBitmapKeepSize("direction_button")
 
@@ -78,7 +78,7 @@ class Joystick(screenSize: RectF, context: Context) : Drawable, Entity {
 
     override fun drawOnCanvas(bounds: RectF, surfaceHolder: Canvas, paint: Paint) =
         surfaceHolder.withSave {
-            surfaceHolder.drawBitmap(bitmap,null,rect.copyOfUnderlyingRect, null)
+            surfaceHolder.drawBitmap(bitmap, null, rect.copyOfUnderlyingRect, null)
         }
 
 }

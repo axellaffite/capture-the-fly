@@ -3,6 +3,7 @@ package com.ut3.capturethefly.game.drawable
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
+import com.ut3.capturethefly.game.utils.Vector2f
 
 /**
  * Base class used to indicate that a class is drawable on the screen.
@@ -47,6 +48,8 @@ interface Drawable {
     }
 
     fun intersects(other: Drawable) = rect.intersects(other.rect)
+
+    val center get() = Vector2f(rect.centerX, rect.centerY)
 }
 
 /**
