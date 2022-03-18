@@ -16,8 +16,7 @@ import com.ut3.capturethefly.game.logic.EntityManager
  *
  * @param gameView target on which this should be drawn
  */
-class HUD(gameView: GameView,
-          private val goToNextLevel: ((String) -> Unit)?=null) : Entity, Drawable, EntityManager() {
+class HUD(gameView: GameView, currentPower : () -> Float, currentHealth : () -> Float) : Entity, Drawable, EntityManager() {
 
     override val rect = ImmutableRect(gameView.rect)
 
@@ -25,8 +24,8 @@ class HUD(gameView: GameView,
     private var fps = 0f
     val joystick = createEntity { Joystick(gameView.rect,gameView.context ) }
     val controlButtons = createEntity { ControlButtons(gameView) }
-    private val homeButton = createEntity { HomeButton(RectF(0f,20f,gameView.width.toFloat()-40f,gameView.height.toFloat()),
-    BitmapFactory.decodeResource(gameView.resources, R.drawable.home)) }
+    val chargeBar = createEntity { ChargeBar(gameView.rect,currentPower) }
+    val healthBar = createEntity { HealthBar(gameView.rect,currentHealth) }
 
     override fun onLoad() = Unit
     override fun onSaveState() = Unit
@@ -34,15 +33,14 @@ class HUD(gameView: GameView,
     override fun update(delta: Float) {
         super<EntityManager>.update(delta)
         fps = (1f / delta)
-        if (homeButton.isPressed) {
-            goToNextLevel?.let { it(HomeLevel.NAME) }
-        }
     }
 
     override fun drawOnCanvas(bounds: RectF, surfaceHolder: Canvas, paint: Paint) {
         val buttonPaint = Paint(paint).apply { alpha = 200 }
         surfaceHolder.draw(bounds, joystick, buttonPaint)
         surfaceHolder.draw(bounds, controlButtons, buttonPaint)
+        surfaceHolder.draw(bounds, chargeBar, buttonPaint )
+        surfaceHolder.draw(bounds, healthBar, buttonPaint)
 
         paint.color = Color.WHITE
         paint.textSize = 50f
@@ -58,5 +56,5 @@ class HUD(gameView: GameView,
  * @param config
  * @return
  */
-fun EntityManager.createHud(gameView: GameView, goToNextLevel: ((String) -> Unit)?=null, config: HUD.() -> Unit = {}) =
-    createEntity { HUD(gameView,goToNextLevel).apply(config) }
+fun EntityManager.createHud(gameView: GameView, currentPower: () -> Float, currentHealth: () -> Float, config: HUD.() -> Unit = {}) =
+    createEntity { HUD(gameView,currentPower,currentHealth).apply(config) }

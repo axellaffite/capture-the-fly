@@ -57,6 +57,7 @@ class MainLevel(
     }
 
     override fun update(delta: Float) {
+        power += delta
         super.update(delta)
 
         lastFly += delta
