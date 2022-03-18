@@ -48,7 +48,7 @@ class MainLevel(
 
     override fun render() {
         gameView.draw { canvas, paint ->
-            val scaleFactor = ((gameView.width / tilemap.tileSize) / 18f)
+            val scaleFactor = ((gameView.width / tilemap.tileSize) / 12f)
             val (pivotX, pivotY) = gameView.width / 2f to gameView.height / 2f
 
 
