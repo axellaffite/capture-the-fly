@@ -7,7 +7,6 @@ import android.os.Looper
 import com.ut3.capturethefly.MainActivity
 import com.ut3.capturethefly.ScoreActivity
 import com.ut3.capturethefly.game.GameView
-import com.ut3.capturethefly.game.levels.introduction.IntroductionLevel
 import com.ut3.capturethefly.game.logic.EntityManager
 import com.ut3.capturethefly.game.logic.GameLogic
 import com.ut3.capturethefly.game.utils.Preferences
@@ -33,15 +32,13 @@ object LevelFactory {
             MainLevel.NAME -> MainLevel(gameView)
 
 
-            IntroductionLevel.NAME -> IntroductionLevel(gameView)
-
             else -> null
         }
     }
 
     private fun getLevelName(levelToLoad: Int): String {
         return when (levelToLoad) {
-            1 -> IntroductionLevel.NAME
+            1 -> MainLevel.NAME
             else -> HomeLevel.NAME
         }
     }
@@ -49,7 +46,7 @@ object LevelFactory {
     private fun goToNextLevel(activity: Activity, gameLogic: GameLogic): (level: String) -> Unit {
         return { level ->
             val nextLevel = when (level) {
-                IntroductionLevel.NAME -> HomeLevel.NAME
+                MainLevel.NAME -> HomeLevel.NAME
                 else -> HomeLevel.NAME
             }
 

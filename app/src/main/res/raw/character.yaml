@@ -8,22 +8,22 @@ actions:
   attack_down:
     index: 0
     count: 4
-    time: 0.5
+    time: 0.1
     loop: false
   attack_left:
     index: 4
     count: 4
-    time: 0.5
+    time: 0.1
     loop: false
   attack_right:
     index: 8
     count: 4
-    time: 0.5
+    time: 0.1
     loop: false
   attack_up:
     index: 12
     count: 4
-    time: 0.5
+    time: 0.1
     loop: false
   idle_down:
     index: 16
@@ -45,19 +45,15 @@ actions:
     index: 32
     count: 4
     time: 0.2
-    loop: false
   walk_left:
     index: 36
     count: 4
     time: 0.2
-    loop: false
   walk_right:
     index: 40
     count: 4
     time: 0.2
-    loop: false
   walk_up:
     index: 44
     count: 4
     time: 0.2
-    loop: false

@@ -37,6 +37,7 @@ class Player(
     private var verticalMovement = Joystick.Movement.None
     private var horizontalMovement = Joystick.Movement.None
     private var lastDirection = Joystick.Movement.Down
+    private var isAttacking = false
     private var isDead = false
     private var reactToEnvironment = true
     private var isUpsideDown = false
@@ -93,7 +94,7 @@ class Player(
         }
 
         if (reactToEnvironment) {
-            val isTouchingGround = isTouchingGround()
+            isAttacking = isAttacking && !isAnimationFinished
             moveIfRequired(delta)
 
             dx = dx.coerceIn(-16f, 16f)
@@ -151,36 +152,14 @@ class Player(
             }
         }
 
-        // TODO play correct animation here
-        setAction(verticalMovement.getAction("idle",lastDirection))
-        /*when (verticalMovement) {
-            Joystick.Movement.Right -> setAction("walk_right")
-            Joystick.Movement.Left -> setAction("walk_left")
-            Joystick.Movement.None -> {
-                when (lastDirection) {
-                    Joystick.Movement.Right -> setAction("idle_right")
-                    Joystick.Movement.Left -> setAction("idle_left")
-                    Joystick.Movement.Up -> setAction("idle_right")
-                    Joystick.Movement.Bottom -> setAction("idle_left")
-                }
-                setAction("idle_up")
-            }
+        if(isAttacking){
+            setAction(verticalMovement.getAction("attack",lastDirection))
+        }else if( verticalMovement == Joystick.Movement.None && horizontalMovement == Joystick.Movement.None){
+            setAction(verticalMovement.getAction("idle",lastDirection))
+        }else{
+            setAction(verticalMovement.getAction("walk",lastDirection))
         }
-        when (horizontalMovement) {
-            Joystick.Movement.Up -> setAction("walk_up")
-            Joystick.Movement.Down -> setAction("walk_bottom")
-            Joystick.Movement.None -> {
-                setAction("idle_up")
-            }/
-        }*/
-//        when (movement) {
-//            Joystick.Movement.Right -> run()
-//            Joystick.Movement.Left -> run(reverse = true)
-//            Joystick.Movement.None -> {
-//                setAction("idle", isBitmapReversed)
-//                isRunning = false
-//            }
-//        }
+
     }
 
     private fun run(reverse: Boolean = false) {
@@ -216,6 +195,10 @@ class Player(
                 })
             }
         }
+    }
+
+    fun attack() {
+        isAttacking = true
     }
 
     fun setPosition(position: Vector2i, tileSize: Float) {

@@ -8,6 +8,7 @@ import androidx.core.graphics.withScale
 import com.ut3.capturethefly.R
 import com.ut3.capturethefly.game.GameView
 import com.ut3.capturethefly.game.drawable.cameras.createTrackingCamera
+import com.ut3.capturethefly.game.logic.InputState
 
 class MainLevel(
     gameView : GameView
@@ -26,6 +27,7 @@ class MainLevel(
         player.move(tilemap.rect.width/2.toFloat(),tilemap.rect.height/2.toFloat())
     }
 
+    private var luminosityLevel  = 0f
     private val camera = createTrackingCamera(
         screenPosition = RectF(0f, 0f, gameView.width.toFloat(), gameView.height.toFloat()),
         gamePosition = RectF(0f, 0f, gameView.width.toFloat(), gameView.height.toFloat()),
@@ -34,6 +36,14 @@ class MainLevel(
 
     override fun onSaveState() {
         TODO("save state of the level")
+    }
+
+    override fun handleInput(inputState: InputState) {
+        super.handleInput(inputState)
+        if(hud.controlButtons.isAPressed){
+            player.attack()
+        }
+        luminosityLevel = inputState.luminosity
     }
 
     override fun render() {

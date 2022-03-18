@@ -88,6 +88,7 @@ class ControlButtons(gameView: GameView) : Drawable, Entity {
             isBPressed = false
         } else {
             val (x,y) = event.getX(event.actionIndex) to event.getY(event.actionIndex)
+            println("x=$x | y=$y")
             isAPressed = isAVisible && aButton.contains(Vector2f(x, y))
             isBPressed = isBVisible && !isAPressed && bButton.contains(Vector2f(x, y))
         }
