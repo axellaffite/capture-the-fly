@@ -3,7 +3,6 @@ package com.ut3.capturethefly.game.levels
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
-import android.graphics.Typeface
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.withClip
 import androidx.core.graphics.withScale
@@ -70,6 +69,7 @@ class MainLevel(
             }
         }
         luminosityLevel = inputState.luminosity
+        isShaking = inputState.isShaking(preferences.accelerationReference)
     }
 
     override fun update(delta: Float) {
@@ -107,6 +107,7 @@ class MainLevel(
                 player.takeDamage()
             }
         }
+        println("camera :"+camera.gamePosition)
         if (isShaking && player.power >= 1f ){
             player.power = 0f
             flies.forEach {
