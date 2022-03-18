@@ -21,7 +21,7 @@ class MainLevel(
     gameView : GameView
 ) : Level(
     gameView = gameView,
-    soundRes = R.raw.ambiance_sound,
+    soundRes = R.raw.inside_the_void,
     tilemapResource = TILE_MAP_RESOURCE
 ) {
 

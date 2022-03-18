@@ -11,9 +11,11 @@ import com.ut3.capturethefly.game.drawable.hud.Joystick
 import com.ut3.capturethefly.game.drawable.sprites.AnimatedSprite
 import com.ut3.capturethefly.game.drawable.tiledmap.TiledMap
 import com.ut3.capturethefly.game.utils.Vector2i
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.NonCancellable.start
 
 class Player(
-    gameView: GameView,
+    private val gameView: GameView,
     private val tilemap: TiledMap,
     private val hud: HUD,
     private val configuration: Player.() -> Unit = {}
@@ -38,6 +40,10 @@ class Player(
     private var reactToEnvironment = true
     private var isUpsideDown = false
     private var invincible = 0f
+
+    private val attackSound = MediaPlayer.create(gameView.context, R.raw.swing)
+    private val hurtSound = MediaPlayer.create(gameView.context,R.raw.hurt_player)
+    private val deathSound = MediaPlayer.create(gameView.context,R.raw.death_player)
 
     var power = 0f
     var health = 1f; private set (value) { field = value.coerceAtMost(1f) }
@@ -93,9 +99,14 @@ class Player(
             horizontalMovement = hud.joystick.horizontalDirection
             if(verticalMovement != Joystick.Movement.None){
                 lastDirection = verticalMovement
+                isRunning = true
             }
-            if(horizontalMovement != Joystick.Movement.None){
+            else if(horizontalMovement != Joystick.Movement.None){
                 lastDirection = horizontalMovement
+                isRunning = true
+            }
+            else {
+                isRunning = false
             }
         }
     }
@@ -138,6 +149,8 @@ class Player(
             deathNumber++
             reactToEnvironment = false
             isDead = true
+            deathSound.start()
+            setAction("hit", isBitmapReversed)
         }
     }
 
@@ -160,7 +173,11 @@ class Player(
         }
 
         if(isAttacking){
-            setAction(verticalMovement.getAction("attack",lastDirection))
+            val hasChanged = setAction(verticalMovement.getAction("attack",lastDirection))
+            if (hasChanged) {
+                attackSound.start()
+            }
+
         }else if( verticalMovement == Joystick.Movement.None && horizontalMovement == Joystick.Movement.None){
             setAction(verticalMovement.getAction("idle",lastDirection))
         }else{
@@ -212,6 +229,7 @@ class Player(
 
     fun takeDamage() : Boolean {
         if (invincible <= 0f) {
+            hurtSound.start()
             invincible = 1f
             health -= 0.2f
             if(health <= 0f){
