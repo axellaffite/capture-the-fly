@@ -63,12 +63,6 @@ class IntroductionLevel(
 
         val rawAlpha = (threshold - (luminosityLevel * 4f / 3f)).coerceAtLeast(0f)
         nightAlpha = (rawAlpha * (255f / threshold)).toInt()
-
-        if (player.isTouchingLevel2) {
-            val s = score - 5 * player.deathNumber
-            preferences.scoreLevelOne = if (s >= 0) s else 0
-            nextLevelLoaded = true
-        }
     }
 
     override fun render() {

@@ -72,10 +72,6 @@ class HomeLevel(
     override fun update(delta: Float) {
         super.update(delta)
         levelTouched = when {
-            player.isTouchingLevel1 -> 1
-            player.isTouchingLevel2 -> 2
-            player.isTouchingLevel3 -> 3
-            player.isTouchingLevel4 -> 4
             else -> -1
         }
         popup = levelTouched.takeIf { it != -1 }?.let { TextPopUp("Play level $it", Vector2f(player.rect.left, player.rect.top)) }
