@@ -1,4 +1,4 @@
-package com.ut3.hiddendoor
+package com.ut3.capturethefly
 
 import androidx.appcompat.app.AppCompatActivity
 import com.ut3.capturethefly.game.GameView
