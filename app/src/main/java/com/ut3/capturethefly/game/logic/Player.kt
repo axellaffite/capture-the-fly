@@ -37,10 +37,30 @@ class Player(
     private var isDead = false
     private var reactToEnvironment = true
     private var isUpsideDown = false
+
+
     var dx = 0f
     var dy = 0f
 
     private val collisionRect get() = RectF(rect.left + 9f, rect.top+9f, rect.right - 9f, rect.bottom-9f)
+    private val attackRect: RectF get() {
+        return when {
+            !isAttacking -> RectF()
+            lastDirection == Joystick.Movement.Left -> {
+                RectF(rect.left , rect.top, rect.centerX, rect.bottom)
+            }
+            lastDirection == Joystick.Movement.Right -> {
+                RectF(rect.centerX, rect.top, rect.right, rect.bottom)
+            }
+            lastDirection == Joystick.Movement.Up -> {
+                RectF(rect.left, rect.top, rect.right, rect.centerY)
+            }
+            lastDirection == Joystick.Movement.Down -> {
+                RectF(rect.left , rect.centerY, rect.right , rect.bottom)
+            }
+            else -> RectF()
+        }
+    }
 
     init {
         reset()
@@ -104,18 +124,6 @@ class Player(
         }
     }
 
-    private fun isTouchingGround(): Boolean {
-        val intersectionRect = if (isUpsideDown) {
-            RectF(collisionRect.left, collisionRect.top-1, collisionRect.right, collisionRect.top)
-        } else {
-            RectF(collisionRect.left, collisionRect.bottom, collisionRect.right, collisionRect.bottom + 1f)
-        }
-
-        return tilemap.collisionTilesIntersecting(intersectionRect).any { tileValue ->
-            tileValue == TiledMap.COLLISION_BLOCK
-        }
-    }
-
     private fun shouldBeDead(): Boolean {
         return isDead || tilemap.collisionTilesIntersecting(collisionRect)
             .any { it == TiledMap.DEATH_BLOCK }
@@ -158,14 +166,6 @@ class Player(
 
     }
 
-    private fun run(reverse: Boolean = false) {
-        isRunning = true
-        if (isTouchingGround()) {
-            setAction("run", reverse)
-        }else {
-            setAction("jump",reverse)
-        }
-    }
 
     fun updatePosition(delta: Float) {
         let {
