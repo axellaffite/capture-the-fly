@@ -16,6 +16,7 @@ import com.ut3.capturethefly.game.utils.Vector2f
 import kotlin.math.abs
 
 class Fly(
+
     context: Context,
     x: Float,
     y: Float,
@@ -24,10 +25,13 @@ class Fly(
     private val otherFlies: List<Fly>,
     private val onDie: () -> Unit
 ): Entity, Drawable, AnimatedSprite(context, R.raw.fly, "fly") {
-    private val speed = tiledMap.tileSize
+
+    val maxSpeed = tiledMap.tileSize
+    var currentSpeed = maxSpeed
     override var rect = ImmutableRect(x, y, x+24f, y+24f)
     private var isDead = false
     private var isAttacking = false
+    private var isStunned = false
     private var lastDirection = Joystick.Movement.Down
 
     private var verticalMovement = Joystick.Movement.None
@@ -81,17 +85,19 @@ class Fly(
         super<AnimatedSprite>.update(delta)
 
         rect.copyOfUnderlyingRect.offset(
-            horizontalMovement.delta * speed * delta,
-            verticalMovement.delta * speed * delta
+            horizontalMovement.delta * currentSpeed * delta,
+            verticalMovement.delta * currentSpeed * delta
         )
 
         moveX(delta)
         moveY(delta)
         if(!isDead){
             isAttacking = isAttacking && !isAnimationFinished
-            when (horizontalMovement) {
-                Joystick.Movement.Left -> setAction("fly", reverse = true)
-                else -> setAction("fly", reverse = false)
+            if (!isStunned) {
+                when (horizontalMovement) {
+                    Joystick.Movement.Left -> setAction("fly", reverse = true)
+                    else -> setAction("fly", reverse = false)
+                }
             }
         }
     }
@@ -99,7 +105,7 @@ class Fly(
     private fun moveX(delta: Float) {
         val tmp = rect.copyOfUnderlyingRect.apply {
             offset(
-                horizontalMovement.delta * speed * delta,
+                horizontalMovement.delta * currentSpeed * delta,
                 0f
             )
         }
@@ -113,7 +119,7 @@ class Fly(
         val tmp = rect.copyOfUnderlyingRect.apply {
             offset(
                 0f,
-                verticalMovement.delta * speed * delta,
+                verticalMovement.delta * currentSpeed * delta,
             )
         }
 
@@ -134,6 +140,17 @@ class Fly(
             isDead = true
             onDie()
 
+        }
+    }
+
+    fun stun(isStunned : Boolean) {
+        if (isStunned) {
+            currentSpeed = 0f
+            this.isStunned = true
+            setAction("stun")
+        } else {
+            currentSpeed = maxSpeed
+            this.isStunned = false
         }
     }
 

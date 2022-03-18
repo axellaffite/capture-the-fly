@@ -3,6 +3,7 @@ package com.ut3.capturethefly.game.levels
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.util.Log
 import androidx.core.graphics.withClip
 import androidx.core.graphics.withScale
 import com.ut3.capturethefly.R
@@ -28,14 +29,17 @@ class MainLevel(
         player.move(tilemap.rect.width/2.toFloat(),tilemap.rect.height/2.toFloat())
     }
 
+    private val timeNeededToStun = 1f
     private var luminosityLevel  = 0f
     private var fliesAlive = 10
+    private var fliesAreStunned = false
     private val camera = createTrackingCamera(
         screenPosition = RectF(0f, 0f, gameView.width.toFloat(), gameView.height.toFloat()),
         gamePosition = RectF(0f, 0f, gameView.width.toFloat(), gameView.height.toFloat()),
         track = player::center
     )
 
+    private var timeElapsedWithLowLuminosity = 0f
     private var lastFly = 0f
     private val flies = mutableListOf<Fly>()
 
@@ -54,6 +58,30 @@ class MainLevel(
             }
         }
         luminosityLevel = inputState.luminosity
+        Log.d("LUMINOSITY",luminosityLevel.toString())
+    }
+
+    fun countLowLuminosityTime(delta:Float) {
+        if (luminosityLevel <10) {
+            timeElapsedWithLowLuminosity += delta
+        } else {
+            timeElapsedWithLowLuminosity = 0f
+        }
+    }
+
+    fun stunFlies() {
+        if (timeElapsedWithLowLuminosity >= timeNeededToStun && !fliesAreStunned) {
+            for (fly in flies) {
+                fly.stun(true)
+            }
+            fliesAreStunned = true
+        }
+        if (timeElapsedWithLowLuminosity <= timeNeededToStun && fliesAreStunned) {
+            for (fly in flies) {
+                fly.stun(false)
+            }
+            fliesAreStunned = false
+        }
     }
 
     override fun update(delta: Float) {
@@ -80,6 +108,9 @@ class MainLevel(
 
             lastFly = 0f
         }
+
+        countLowLuminosityTime(delta)
+        stunFlies()
 
         val playerRect = player.collisionRect
         for (fly in flies) {
