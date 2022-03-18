@@ -17,9 +17,10 @@ abstract class Level(
 ): EntityManager() {
 
     protected var power = 0f
+    protected var health = 100f
 
     protected val tilemap = gameView.context.loadTiledMap(tilemapResource)
-    protected val hud = createHud(gameView,::power) { controlButtons.isBVisible = false }
+    protected val hud = createHud(gameView,::power,::health) { controlButtons.isBVisible = false }
     protected val player = createEntity { Player(gameView, tilemap, hud) { setPosition(tilemap.initialPlayerPosition, tilemap.tileSize) } }
     protected val preferences = Preferences(gameView.context)
 

@@ -16,7 +16,7 @@ import com.ut3.capturethefly.game.logic.EntityManager
  *
  * @param gameView target on which this should be drawn
  */
-class HUD(gameView: GameView, currentPower : () -> Float) : Entity, Drawable, EntityManager() {
+class HUD(gameView: GameView, currentPower : () -> Float, currentHealth : () -> Float) : Entity, Drawable, EntityManager() {
 
     override val rect = ImmutableRect(gameView.rect)
 
@@ -25,6 +25,7 @@ class HUD(gameView: GameView, currentPower : () -> Float) : Entity, Drawable, En
     val joystick = createEntity { Joystick(gameView.rect,gameView.context ) }
     val controlButtons = createEntity { ControlButtons(gameView) }
     val chargeBar = createEntity { ChargeBar(gameView.rect,currentPower) }
+    val healthBar = createEntity { HealthBar(gameView.rect,currentHealth) }
 
     override fun onLoad() = Unit
     override fun onSaveState() = Unit
@@ -39,6 +40,7 @@ class HUD(gameView: GameView, currentPower : () -> Float) : Entity, Drawable, En
         surfaceHolder.draw(bounds, joystick, buttonPaint)
         surfaceHolder.draw(bounds, controlButtons, buttonPaint)
         surfaceHolder.draw(bounds, chargeBar, buttonPaint )
+        surfaceHolder.draw(bounds, healthBar, buttonPaint)
 
         paint.color = Color.WHITE
         paint.textSize = 50f
@@ -54,5 +56,5 @@ class HUD(gameView: GameView, currentPower : () -> Float) : Entity, Drawable, En
  * @param config
  * @return
  */
-fun EntityManager.createHud(gameView: GameView, currentPower: () -> Float, config: HUD.() -> Unit = {}) =
-    createEntity { HUD(gameView,currentPower).apply(config) }
+fun EntityManager.createHud(gameView: GameView, currentPower: () -> Float, currentHealth: () -> Float, config: HUD.() -> Unit = {}) =
+    createEntity { HUD(gameView,currentPower,currentHealth).apply(config) }

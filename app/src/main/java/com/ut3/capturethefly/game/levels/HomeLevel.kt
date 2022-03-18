@@ -30,7 +30,7 @@ class HomeLevel(
     private var levelTouched = -1
     private var quitHome = false
     private val tilemap = gameView.context.loadTiledMap(TILE_MAP_RESOURCE)
-    private val hud = createHud(gameView, {1f}) { controlButtons.isBVisible = false }
+    private val hud = createHud(gameView, {1f},{1f}) { controlButtons.isBVisible = false }
     private val player = createEntity { Player(gameView, tilemap, hud) { setPosition(tilemap.initialPlayerPosition, tilemap.tileSize) } }
     private var levelLaunched = false
 
