@@ -42,16 +42,16 @@ class Fly(
     val attackRect: ImmutableRect get() {
         return when (lastDirection) {
             Joystick.Movement.Left -> {
-                ImmutableRect(rect.left , rect.top, rect.centerX, rect.bottom)
+                ImmutableRect(rect.left , rect.top, (rect.left + rect.centerX) / 2f, rect.bottom)
             }
             Joystick.Movement.Right -> {
-                ImmutableRect(rect.centerX, rect.top, rect.right, rect.bottom)
+                ImmutableRect((rect.centerX + rect.right) / 2f, rect.top, rect.right, rect.bottom)
             }
             Joystick.Movement.Up -> {
-                ImmutableRect(rect.left, rect.top, rect.right, rect.centerY)
+                ImmutableRect(rect.left, rect.top, rect.right, (rect.top + rect.centerY) / 2f)
             }
             Joystick.Movement.Down -> {
-                ImmutableRect(rect.left , rect.centerY, rect.right , rect.bottom)
+                ImmutableRect(rect.left , (rect.bottom + rect.centerY) / 2f, rect.right , rect.bottom)
             }
             else -> ImmutableRect()
         }
@@ -60,56 +60,62 @@ class Fly(
     override fun handleInput(inputState: InputState) {
         super<AnimatedSprite>.handleInput(inputState)
 
-        val positionToReach = playerPosition()
-        val currentPosition = center
-        verticalMovement = when {
-            positionToReach.y < currentPosition.y -> Joystick.Movement.Up
-            positionToReach.y > currentPosition.y -> Joystick.Movement.Down
-            else -> Joystick.Movement.None
+        if (!isDead) {
+            val positionToReach = playerPosition()
+            val currentPosition = center
+            verticalMovement = when {
+                positionToReach.y < currentPosition.y -> Joystick.Movement.Up
+                positionToReach.y > currentPosition.y -> Joystick.Movement.Down
+                else -> Joystick.Movement.None
+            }
+
+            horizontalMovement = when {
+                positionToReach.x < currentPosition.x -> Joystick.Movement.Left
+                positionToReach.x > currentPosition.x -> Joystick.Movement.Right
+                else -> Joystick.Movement.None
+            }
+
+            if(verticalMovement != Joystick.Movement.None){
+                lastDirection = verticalMovement
+            }
+            if(horizontalMovement != Joystick.Movement.None){
+                lastDirection = horizontalMovement
+            }
         }
 
-        horizontalMovement = when {
-            positionToReach.x < currentPosition.x -> Joystick.Movement.Left
-            positionToReach.x > currentPosition.x -> Joystick.Movement.Right
-            else -> Joystick.Movement.None
-        }
-
-        if(verticalMovement != Joystick.Movement.None){
-            lastDirection = verticalMovement
-        }
-        if(horizontalMovement != Joystick.Movement.None){
-            lastDirection = horizontalMovement
-        }
     }
 
     override fun update(delta: Float) {
         super<AnimatedSprite>.update(delta)
 
-        rect.copyOfUnderlyingRect.offset(
-            horizontalMovement.delta * currentSpeed * delta,
-            verticalMovement.delta * currentSpeed * delta
-        )
+        if (!isDead) {
+            rect.copyOfUnderlyingRect.offset(
+                horizontalMovement.delta * currentSpeed * delta,
+                verticalMovement.delta * currentSpeed * delta
+            )
 
-        moveX(delta)
-        moveY(delta)
+            moveX(delta)
+            moveY(delta)
 
-        if(!isDead) {
-            isAttacking = isAttacking && !isAnimationFinished
-            if (!isStunned) {
-                when (horizontalMovement) {
-                    Joystick.Movement.Left -> if (isAttacking) {
-                        setAction("attack", reverse = true)
-                    } else {
-                        setAction("fly", reverse = true)
-                    }
-                    else -> if (isAttacking) {
-                        setAction("attack", reverse = true)
-                    } else {
-                        setAction("fly", reverse = true)
+            if(!isDead) {
+                isAttacking = isAttacking && !isAnimationFinished
+                if (!isStunned) {
+                    when (horizontalMovement) {
+                        Joystick.Movement.Left -> if (isAttacking) {
+                            setAction("attack", reverse = true)
+                        } else {
+                            setAction("fly", reverse = true)
+                        }
+                        else -> if (isAttacking) {
+                            setAction("attack", reverse = true)
+                        } else {
+                            setAction("fly", reverse = true)
+                        }
                     }
                 }
             }
         }
+
 
     }
 
@@ -147,11 +153,9 @@ class Fly(
     fun die() {
         if (!isDead) {
             setAction("die")
-            println("Im dying")
             isDead = true
             deathSound.start()
             onDie()
-
         }
     }
 
@@ -168,9 +172,15 @@ class Fly(
         }
     }
 
-    fun attack(){
-        setAction("attack")
-        isAttacking = true
+    fun attack(): Boolean {
+        if (!isDead) {
+            setAction("attack")
+            isAttacking = true
+
+            return true
+        }
+
+        return false
     }
 
     override fun drawOnCanvas(bounds: RectF, surfaceHolder: Canvas, paint: Paint) {

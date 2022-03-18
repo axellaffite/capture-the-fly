@@ -41,10 +41,6 @@ class HUD(gameView: GameView, currentPower : () -> Float, currentHealth : () -> 
         surfaceHolder.draw(bounds, controlButtons, buttonPaint)
         surfaceHolder.draw(bounds, chargeBar, buttonPaint )
         surfaceHolder.draw(bounds, healthBar, buttonPaint)
-
-        paint.color = Color.WHITE
-        paint.textSize = 50f
-        surfaceHolder.drawText("${fps.toInt()} fps", 50f, 50f, paint)
     }
 
 }

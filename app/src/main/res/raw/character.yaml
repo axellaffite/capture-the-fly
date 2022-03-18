@@ -1,5 +1,5 @@
 metadata:
-  resource: attack_idle_walk
+  resource: attack_idle_walk_die
   tileWidth: 32
   tileHeight: 32
   tileCount: 32
@@ -55,5 +55,9 @@ actions:
     time: 0.2
   walk_up:
     index: 44
+    count: 4
+    time: 0.2
+  die:
+    index: 48
     count: 4
     time: 0.2

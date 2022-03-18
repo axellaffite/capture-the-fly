@@ -46,7 +46,7 @@ class Player(
     private val deathSound = MediaPlayer.create(gameView.context,R.raw.death_player)
 
     var power = 0f
-    var health = 1f; private set
+    var health = 1f; private set (value) { field = value.coerceAtMost(1f) }
 
 
     var dx = 0f
@@ -84,8 +84,6 @@ class Player(
         reactToEnvironment = true
         verticalMovement = Joystick.Movement.None
         horizontalMovement = Joystick.Movement.None
-        dx = 0f
-        dy = 0f
     }
 
     override fun handleInput(inputState: InputState) {
@@ -147,6 +145,7 @@ class Player(
 
     fun die() {
         if (!isDead) {
+            setAction("die")
             deathNumber++
             reactToEnvironment = false
             isDead = true
@@ -228,18 +227,28 @@ class Player(
         rect = ImmutableRect(left, top, right, bottom)
     }
 
-    fun takeDamage() {
+    fun takeDamage() : Boolean {
         if (invincible <= 0f) {
             hurtSound.start()
             invincible = 1f
             health -= 0.2f
             if(health <= 0f){
                 die()
+                return true
             }
         }
+        return false
     }
 
     fun gatherPower(delta: Float) {
-        power += delta * 0.03f
+        power += delta * 0.01f
+    }
+
+    fun gatherHealth(delta: Float) {
+        health += delta * 0.03f
+    }
+
+    fun resetHealth() {
+        health = 1f
     }
 }
