@@ -13,7 +13,7 @@ class HealthBar(screenSize : RectF, private val currentHealth : () -> Float) : D
     val width = screenSize.width()/5
     val height = screenSize.height()/10
 
-    private val borderRadius = 20f
+    private val borderRadius = 10f
     private val alpha = 130
     private val padding = 15f
 
