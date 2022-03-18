@@ -3,6 +3,7 @@ package com.ut3.capturethefly.game.drawable.sprites
 import android.content.Context
 import android.graphics.*
 import androidx.annotation.RawRes
+import androidx.core.graphics.withScale
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.decodeFromStream
 import com.ut3.capturethefly.game.drawable.Drawable
@@ -109,6 +110,7 @@ abstract class AnimatedSprite(
             isDither = true
             isFilterBitmap = false
         }
+
 
         surfaceHolder.drawVertices(
             Canvas.VertexMode.TRIANGLES,

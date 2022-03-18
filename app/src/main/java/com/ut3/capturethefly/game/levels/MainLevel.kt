@@ -8,6 +8,7 @@ import androidx.core.graphics.withScale
 import com.ut3.capturethefly.R
 import com.ut3.capturethefly.game.GameView
 import com.ut3.capturethefly.game.drawable.cameras.createTrackingCamera
+import com.ut3.capturethefly.game.logic.Fly
 import com.ut3.capturethefly.game.logic.InputState
 
 class MainLevel(
@@ -33,6 +34,16 @@ class MainLevel(
         gamePosition = RectF(0f, 0f, gameView.width.toFloat(), gameView.height.toFloat()),
         track = player::center
     )
+
+    private val fly = createEntity {
+        Fly(
+            context = gameView.context,
+            x = player.rect.left,
+            y = player.rect.top + 200f,
+            tiledMap = tilemap,
+            player::center
+        )
+    }
 
     override fun onSaveState() {
         TODO("save state of the level")
@@ -63,6 +74,8 @@ class MainLevel(
 
                     canvas.draw(tilemap, paint)
                     canvas.draw(player, paint)
+                    canvas.draw(fly, paint)
+
 
                     canvas.drawRect(
                         0f,
