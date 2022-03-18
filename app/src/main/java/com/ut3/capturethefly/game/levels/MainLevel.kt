@@ -8,6 +8,7 @@ import androidx.core.graphics.withScale
 import com.ut3.capturethefly.R
 import com.ut3.capturethefly.game.GameView
 import com.ut3.capturethefly.game.drawable.cameras.createTrackingCamera
+import com.ut3.capturethefly.game.logic.Fly
 import com.ut3.capturethefly.game.logic.InputState
 
 class MainLevel(
@@ -34,6 +35,9 @@ class MainLevel(
         track = player::center
     )
 
+    private var lastFly = 0f
+    private val flies = mutableListOf<Fly>()
+
     override fun onSaveState() {
         TODO("save state of the level")
     }
@@ -49,6 +53,26 @@ class MainLevel(
     override fun update(delta: Float) {
         power += delta
         super.update(delta)
+
+        println(lastFly)
+        lastFly += delta
+        if (lastFly >= 0.5 && flies.size < 10) {
+            flies.add(
+                createEntity {
+                    Fly(
+                        context = gameView.context,
+                        x = player.rect.left,
+                        y = player.rect.top + 50f,
+                        tiledMap = tilemap,
+                        player::center,
+                        flies
+                    )
+                }
+            )
+
+            lastFly = 0f
+            println("added")
+        }
     }
 
     override fun render() {
@@ -68,6 +92,10 @@ class MainLevel(
 
                     canvas.draw(tilemap, paint)
                     canvas.draw(player, paint)
+                    flies.forEach {
+                        canvas.draw(it, paint)
+                    }
+
 
                     canvas.drawRect(
                         0f,

@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import androidx.core.graphics.withScale
 import com.ut3.capturethefly.R
 import com.ut3.capturethefly.game.drawable.Drawable
 import com.ut3.capturethefly.game.drawable.ImmutableRect
@@ -12,16 +13,18 @@ import com.ut3.capturethefly.game.drawable.hud.Joystick
 import com.ut3.capturethefly.game.drawable.sprites.AnimatedSprite
 import com.ut3.capturethefly.game.drawable.tiledmap.TiledMap
 import com.ut3.capturethefly.game.utils.Vector2f
+import kotlin.math.abs
 
 class Fly(
     context: Context,
     x: Float,
     y: Float,
     private val tiledMap: TiledMap,
-    private val playerPosition: () -> Vector2f
-): Entity, Drawable, AnimatedSprite(context, R.raw.character, "fly") {
+    private val playerPosition: () -> Vector2f,
+    private val otherFlies: List<Fly>
+): Entity, Drawable, AnimatedSprite(context, R.raw.fly, "fly") {
     private val speed = tiledMap.tileSize
-    override var rect = ImmutableRect(x, y, x+tiledMap.tileSize, y+tiledMap.tileSize)
+    override var rect = ImmutableRect(x, y, x+24f, y+24f)
 
     private var verticalMovement = Joystick.Movement.None
     private var horizontalMovement = Joystick.Movement.None
@@ -54,6 +57,11 @@ class Fly(
 
         moveX(delta)
         moveY(delta)
+
+        when (horizontalMovement) {
+            Joystick.Movement.Left -> setAction("fly", reverse = true)
+            else -> setAction("fly", reverse = false)
+        }
     }
 
     private fun moveX(delta: Float) {
@@ -64,7 +72,7 @@ class Fly(
             )
         }
 
-        if (!tiledMap.collisionTilesIntersecting(tmp).any { it == TiledMap.COLLISION_BLOCK }) {
+        if (!otherFlies.any { it !== this && it.rect.intersects(tmp) }) {
             rect = ImmutableRect(tmp)
         }
     }
@@ -77,13 +85,20 @@ class Fly(
             )
         }
 
-        if (!tiledMap.collisionTilesIntersecting(tmp).any { it == TiledMap.COLLISION_BLOCK }) {
+        val offsetX = rect.centerX - playerPosition().x
+        if (abs(offsetX) < 1f) {
+            tmp.offset(-offsetX, 0f)
+        }
+
+        if (!otherFlies.any { it !== this && it.rect.intersects(tmp) }) {
             rect = ImmutableRect(tmp)
         }
     }
 
     override fun drawOnCanvas(bounds: RectF, surfaceHolder: Canvas, paint: Paint) {
-        paint.color = Color.RED
-        surfaceHolder.drawRect(rect.copyOfUnderlyingRect, paint)
+        surfaceHolder.withScale(x = if (horizontalMovement == Joystick.Movement.Left) -1f else 1f, pivotX = center.x, pivotY = center.y) {
+            super.drawOnCanvas(bounds, surfaceHolder, paint)
+        }
     }
+
 }

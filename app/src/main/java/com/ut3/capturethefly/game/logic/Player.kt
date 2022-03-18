@@ -1,10 +1,7 @@
 package com.ut3.capturethefly.game.logic
 
-import android.graphics.Canvas
-import android.graphics.Paint
 import android.graphics.RectF
 import android.media.MediaPlayer
-import androidx.core.graphics.withScale
 import com.ut3.capturethefly.R
 import com.ut3.capturethefly.game.GameView
 import com.ut3.capturethefly.game.drawable.Drawable
@@ -13,7 +10,6 @@ import com.ut3.capturethefly.game.drawable.hud.HUD
 import com.ut3.capturethefly.game.drawable.hud.Joystick
 import com.ut3.capturethefly.game.drawable.sprites.AnimatedSprite
 import com.ut3.capturethefly.game.drawable.tiledmap.TiledMap
-import com.ut3.capturethefly.game.utils.Vector2f
 import com.ut3.capturethefly.game.utils.Vector2i
 
 class Player(
