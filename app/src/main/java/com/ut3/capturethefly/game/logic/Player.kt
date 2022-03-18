@@ -40,7 +40,7 @@ class Player(
     private var invincible = 0f
 
     var power = 0f
-    var health = 100f; private set
+    var health = 1f; private set
 
 
     var dx = 0f
@@ -216,6 +216,9 @@ class Player(
         if (invincible <= 0f) {
             invincible = 1f
             health -= 0.2f
+            if(health <= 0f){
+                die()
+            }
         }
     }
 
