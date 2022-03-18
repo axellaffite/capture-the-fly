@@ -1,0 +1,19 @@
+metadata:
+  resource: key_16x16
+  tileWidth: 16
+  tileHeight: 16
+  tileCount: 2
+
+actions:
+  silver:
+    index: 0
+    count: 1
+    time: -1
+  gold:
+    index: 1
+    count: 1
+    time: -1
+  destroy:
+    index: 2
+    count: 1
+    time: -1

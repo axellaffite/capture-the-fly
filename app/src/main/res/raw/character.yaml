@@ -1,0 +1,31 @@
+metadata:
+  resource: character_24x18
+  tileWidth: 24
+  tileHeight: 18
+  tileCount: 24
+
+actions:
+  idle:
+    index: 0
+    count: 4
+    time: 0.2
+  walk:
+    index: 4
+    count: 6
+    time: 0.1
+  kick:
+    index: 10
+    count: 3
+    time: 0.1
+  hit:
+    index: 13
+    count: 4
+    time: 0.1
+  run:
+    index: 17
+    count: 7
+    time: 0.1
+  jump:
+    index: 17
+    count : 1
+    time : 0.1

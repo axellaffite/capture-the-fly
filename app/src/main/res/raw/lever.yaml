@@ -1,0 +1,15 @@
+metadata:
+  resource: lever_18x16
+  tileWidth: 18
+  tileHeight: 16
+  tileCount: 2
+
+actions:
+  off:
+    index: 0
+    count: 1
+    time: -1
+  on:
+    index: 1
+    count: 1
+    time: -1

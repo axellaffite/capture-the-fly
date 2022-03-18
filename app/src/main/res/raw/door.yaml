@@ -1,0 +1,16 @@
+metadata:
+  resource: door_32x39
+  tileWidth: 32
+  tileHeight: 39
+  tileCount: 4
+actions:
+  close:
+    index: 0
+    count: 1
+    time: -1
+
+  open:
+    index: 0
+    count: 4
+    time: 0.1
+    loop: false
