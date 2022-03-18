@@ -34,7 +34,8 @@ class Player(
 
     private val runSound = MediaPlayer.create(gameView.context, R.raw.feet_49)
     private var isRunning = false
-    private var movement = Joystick.Movement.None
+    private var verticalMovement = Joystick.Movement.None
+    private var horizontalMovement = Joystick.Movement.None
     private var isDead = false
     private var reactToEnvironment = true
     private var isUpsideDown = false
@@ -53,7 +54,8 @@ class Player(
 
         isDead = false
         reactToEnvironment = true
-        movement = Joystick.Movement.None
+        verticalMovement = Joystick.Movement.None
+        horizontalMovement = Joystick.Movement.None
         dx = 0f
         dy = 0f
     }
@@ -62,11 +64,13 @@ class Player(
         if (reactToEnvironment) {
             val event = inputState.touchEvent
             if (event == null) {
-                movement = Joystick.Movement.None
+                verticalMovement = Joystick.Movement.None
+                horizontalMovement = Joystick.Movement.None
                 return
             }
 
-            movement = hud.joystick.direction
+            verticalMovement = hud.joystick.verticalDirection
+            horizontalMovement = hud.joystick.horizontalDirection
         }
     }
 
@@ -83,7 +87,7 @@ class Player(
 
         if (reactToEnvironment) {
             val isTouchingGround = isTouchingGround()
-            moveIfRequired(isTouchingGround, delta)
+            moveIfRequired(delta)
 
             dx = dx.coerceIn(-8f, 8f)
             dy = dy.coerceIn(-16f, 16f)
@@ -122,34 +126,37 @@ class Player(
         }
     }
 
-    private fun moveIfRequired(touchingGround: Boolean, delta: Float) {
-        if (movement == Joystick.Movement.None) {
+    private fun moveIfRequired(delta: Float) {
+        dx += 64f * delta * horizontalMovement.delta
+        dy += 64f * delta * verticalMovement.delta
+
+        if (horizontalMovement == Joystick.Movement.None) {
+            dy /= 2
+        }
+
+        if (horizontalMovement == Joystick.Movement.None) {
             dx /= 2f
             if (dx < 0.5f) {
                 dx = 0f
             }
         }
 
-        var dm = when (movement) {
-            Joystick.Movement.Right -> 1f
-            Joystick.Movement.Left -> -1f
-            else -> 0f
-        }
-
-        if (!touchingGround) {
-            dm /= 2f
-        }
-
-        dx += dm * 64f * delta
-
-        when (movement) {
-            Joystick.Movement.Right -> run()
-            Joystick.Movement.Left -> run(reverse = true)
-            Joystick.Movement.None -> {
-                setAction("idle", isBitmapReversed)
-                isRunning = false
+        if (verticalMovement == Joystick.Movement.None) {
+            dy /= 2f
+            if (dy < 0.5f) {
+                dy = 0f
             }
         }
+
+        // TODO play correct animation here
+//        when (movement) {
+//            Joystick.Movement.Right -> run()
+//            Joystick.Movement.Left -> run(reverse = true)
+//            Joystick.Movement.None -> {
+//                setAction("idle", isBitmapReversed)
+//                isRunning = false
+//            }
+//        }
     }
 
     private fun run(reverse: Boolean = false) {
