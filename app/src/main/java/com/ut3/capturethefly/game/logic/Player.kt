@@ -84,7 +84,7 @@ class Player(
                 return
             }
 
-            movement = hud.joystick.direction
+            movement = hud.joystick.horizontalDirection
         }
     }
 
