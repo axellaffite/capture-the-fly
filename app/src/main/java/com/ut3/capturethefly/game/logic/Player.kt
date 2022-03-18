@@ -78,8 +78,6 @@ class Player(
         reactToEnvironment = true
         verticalMovement = Joystick.Movement.None
         horizontalMovement = Joystick.Movement.None
-        dx = 0f
-        dy = 0f
     }
 
     override fun handleInput(inputState: InputState) {
@@ -225,10 +223,14 @@ class Player(
     }
 
     fun gatherPower(delta: Float) {
-        power += delta * 0.03f
+        power += delta * 0.01f
     }
 
     fun gatherHealth(delta: Float) {
         health += delta * 0.03f
+    }
+
+    fun resetHealth() {
+        health = 1f
     }
 }

@@ -81,7 +81,8 @@ class MainLevel(
         textOpacity = 255f
         playerIsDead = false
 
-        player.move(tilemap.rect.width/2.toFloat(),tilemap.rect.height/2.toFloat())
+        player.moveTo(tilemap.rect.width/2.toFloat(),tilemap.rect.height/2.toFloat())
+        player.resetHealth()
 
         launchNextWave()
     }
@@ -127,7 +128,7 @@ class MainLevel(
     override fun update(delta: Float) {
         super.update(delta)
 
-        if (shouldReset) {
+        if (shouldReset && player.isAnimationFinished) {
             shouldReset = false
             reset()
         }
