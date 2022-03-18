@@ -14,6 +14,8 @@ import com.ut3.capturethefly.game.drawable.cameras.createTrackingCamera
 import com.ut3.capturethefly.game.logic.Fly
 import com.ut3.capturethefly.game.logic.InputState
 import com.ut3.capturethefly.game.logic.isShaking
+import java.util.*
+
 
 class MainLevel(
     gameView : GameView
@@ -54,6 +56,8 @@ class MainLevel(
     private var launchNextWave = false
     private var text = "Wave 1"
     private var textOpacity = 255f
+
+    private val random = Random(System.currentTimeMillis())
 
     init {
         launchNextWave()
@@ -111,8 +115,8 @@ class MainLevel(
                 createEntity {
                     Fly(
                         context = gameView.context,
-                        x = player.rect.left,
-                        y = player.rect.top + 50f,
+                        x = random.nextFloat() * tilemap.rect.width,
+                        y = random.nextFloat() * tilemap.rect.height,
                         tiledMap = tilemap,
                         player::center,
                         flies,

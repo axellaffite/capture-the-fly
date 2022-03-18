@@ -118,7 +118,7 @@ class Fly(
             )
         }
 
-        if (!otherFlies.any { it !== this && it.rect.intersects(tmp) }) {
+        if (!otherFlies.any { it !== this && !it.isDead && it.rect.intersects(tmp) }) {
             rect = ImmutableRect(tmp)
         }
     }
@@ -136,7 +136,7 @@ class Fly(
             tmp.offset(-offsetX, 0f)
         }
 
-        if (!otherFlies.any { it !== this && it.rect.intersects(tmp) }) {
+        if (!otherFlies.any { it !== this && !it.isDead && it.rect.intersects(tmp) }) {
             rect = ImmutableRect(tmp)
         }
     }
@@ -152,13 +152,15 @@ class Fly(
     }
 
     fun stun(isStunned : Boolean) {
-        if (isStunned) {
-            currentSpeed = 0f
-            this.isStunned = true
-            setAction("stun")
-        } else {
-            currentSpeed = maxSpeed
-            this.isStunned = false
+        if (!isDead) {
+            if (isStunned) {
+                currentSpeed = 0f
+                this.isStunned = true
+                setAction("stun")
+            } else {
+                currentSpeed = maxSpeed
+                this.isStunned = false
+            }
         }
     }
 
