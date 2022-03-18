@@ -13,12 +13,11 @@ import com.ut3.capturethefly.game.utils.Preferences
 abstract class Level(
     protected val gameView: GameView,
     @RawRes private val soundRes: Int,
-    @RawRes tilemapResource: Int,
-    val goToNextLevel: (String) -> Unit
+    @RawRes tilemapResource: Int
 ): EntityManager() {
 
     protected val tilemap = gameView.context.loadTiledMap(tilemapResource)
-    protected val hud = createHud(gameView,goToNextLevel) { controlButtons.isBVisible = false }
+    protected val hud = createHud(gameView) { controlButtons.isBVisible = false }
     protected val player = createEntity { Player(gameView, tilemap, hud) { setPosition(tilemap.initialPlayerPosition, tilemap.tileSize) } }
     protected val preferences = Preferences(gameView.context)
 
@@ -26,7 +25,6 @@ abstract class Level(
 
     @CallSuper
     override fun onLoad() {
-        hud.homeVisible = true
         sound = MediaPlayer.create(gameView.context, soundRes).apply {
             isLooping = true
             start()

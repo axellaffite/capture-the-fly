@@ -28,8 +28,6 @@ class HUD(gameView: GameView,
     private val homeButton = createEntity { HomeButton(RectF(0f,20f,gameView.width.toFloat()-40f,gameView.height.toFloat()),
     BitmapFactory.decodeResource(gameView.resources, R.drawable.home)) }
 
-    var homeVisible = false
-
     override fun onLoad() = Unit
     override fun onSaveState() = Unit
 
@@ -45,9 +43,6 @@ class HUD(gameView: GameView,
         val buttonPaint = Paint(paint).apply { alpha = 200 }
         surfaceHolder.draw(bounds, joystick, buttonPaint)
         surfaceHolder.draw(bounds, controlButtons, buttonPaint)
-        if (homeVisible) {
-            surfaceHolder.draw(bounds,homeButton,buttonPaint)
-        }
 
         paint.color = Color.WHITE
         paint.textSize = 50f

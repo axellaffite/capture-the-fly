@@ -17,7 +17,6 @@ import com.ut3.capturethefly.game.drawable.tiledmap.loadTiledMap
 
 class HomeLevel(
     private val gameView: GameView,
-    private val goToScore: () -> Unit,
     private val launchNewActivity: (Int) -> Unit
 ) : EntityManager() {
 
