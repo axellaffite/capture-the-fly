@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
+import android.media.MediaPlayer
 import androidx.core.graphics.withScale
 import com.ut3.capturethefly.R
 import com.ut3.capturethefly.game.drawable.Drawable
@@ -35,6 +36,8 @@ class Fly(
 
     private var verticalMovement = Joystick.Movement.None
     private var horizontalMovement = Joystick.Movement.None
+
+    private val deathSound = MediaPlayer.create(context, R.raw.death_fly)
 
     val attackRect: ImmutableRect get() {
         return when (lastDirection) {
@@ -146,6 +149,7 @@ class Fly(
             setAction("die")
             println("Im dying")
             isDead = true
+            deathSound.start()
             onDie()
 
         }
