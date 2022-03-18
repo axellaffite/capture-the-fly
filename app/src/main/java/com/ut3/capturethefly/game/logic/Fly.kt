@@ -20,7 +20,8 @@ class Fly(
     x: Float,
     y: Float,
     private val tiledMap: TiledMap,
-    private val playerPosition: () -> Vector2f
+    private val playerPosition: () -> Vector2f,
+    private val otherFlies: List<Fly>
 ): Entity, Drawable, AnimatedSprite(context, R.raw.fly, "fly") {
     private val speed = tiledMap.tileSize
     override var rect = ImmutableRect(x, y, x+24f, y+24f)
@@ -71,7 +72,7 @@ class Fly(
             )
         }
 
-        if (!tiledMap.collisionTilesIntersecting(tmp).any { it == TiledMap.COLLISION_BLOCK }) {
+        if (!otherFlies.any { it !== this && it.rect.intersects(tmp) }) {
             rect = ImmutableRect(tmp)
         }
     }
@@ -89,7 +90,7 @@ class Fly(
             tmp.offset(-offsetX, 0f)
         }
 
-        if (!tiledMap.collisionTilesIntersecting(tmp).any { it == TiledMap.COLLISION_BLOCK }) {
+        if (!otherFlies.any { it !== this && it.rect.intersects(tmp) }) {
             rect = ImmutableRect(tmp)
         }
     }

@@ -35,15 +35,8 @@ class MainLevel(
         track = player::center
     )
 
-    private val fly = createEntity {
-        Fly(
-            context = gameView.context,
-            x = player.rect.left,
-            y = player.rect.top + 200f,
-            tiledMap = tilemap,
-            player::center
-        )
-    }
+    private var lastFly = 0f
+    private val flies = mutableListOf<Fly>()
 
     override fun onSaveState() {
         TODO("save state of the level")
@@ -55,6 +48,30 @@ class MainLevel(
             player.attack()
         }
         luminosityLevel = inputState.luminosity
+    }
+
+    override fun update(delta: Float) {
+        super.update(delta)
+
+        println(lastFly)
+        lastFly += delta
+        if (lastFly >= 0.5 && flies.size < 10) {
+            flies.add(
+                createEntity {
+                    Fly(
+                        context = gameView.context,
+                        x = player.rect.left,
+                        y = player.rect.top + 50f,
+                        tiledMap = tilemap,
+                        player::center,
+                        flies
+                    )
+                }
+            )
+
+            lastFly = 0f
+            println("added")
+        }
     }
 
     override fun render() {
@@ -74,7 +91,9 @@ class MainLevel(
 
                     canvas.draw(tilemap, paint)
                     canvas.draw(player, paint)
-                    canvas.draw(fly, paint)
+                    flies.forEach {
+                        canvas.draw(it, paint)
+                    }
 
 
                     canvas.drawRect(

@@ -13,7 +13,7 @@ actions:
   fly:
     index: 9
     count: 5
-    time: 0.2
+    time: 0.1
   attack:
     index: 14
     count: 5
