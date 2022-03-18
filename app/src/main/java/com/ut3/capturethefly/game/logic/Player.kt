@@ -188,17 +188,4 @@ class Player(
 
         rect = ImmutableRect(left, top, right, bottom)
     }
-
-    fun center() = Vector2f(rect.centerX, rect.centerY)
-
-    override fun drawOnCanvas(bounds: RectF, surfaceHolder: Canvas, paint: Paint) {
-        if (isUpsideDown) {
-            val (pivotX, pivotY) = center()
-            surfaceHolder.withScale(y = -1f, pivotX = pivotX, pivotY = pivotY) {
-                super.drawOnCanvas(bounds, surfaceHolder, paint)
-            }
-        } else {
-            super.drawOnCanvas(bounds, surfaceHolder, paint)
-        }
-    }
 }
