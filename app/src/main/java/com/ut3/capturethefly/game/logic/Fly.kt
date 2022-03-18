@@ -103,7 +103,7 @@ class Fly(
             )
         }
 
-        if (!otherFlies.any { it !== this && it.rect.intersects(tmp) }) {
+        if (!otherFlies.any { it !== this && !it.isDead && it.rect.intersects(tmp) }) {
             rect = ImmutableRect(tmp)
         }
     }
@@ -121,7 +121,7 @@ class Fly(
             tmp.offset(-offsetX, 0f)
         }
 
-        if (!otherFlies.any { it !== this && it.rect.intersects(tmp) }) {
+        if (!otherFlies.any { it !== this && !it.isDead && it.rect.intersects(tmp) }) {
             rect = ImmutableRect(tmp)
         }
     }
