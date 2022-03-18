@@ -115,8 +115,6 @@ class Joystick(screenSize: RectF, context: Context) : Drawable, Entity {
             }
         }
 
-//        println("vertical=$verticalDirection | horizontal=$horizontalDirection")
-
         if (horizontalDirection != Movement.None) {
             targetPointer = event.actionIndex
         }
@@ -125,16 +123,6 @@ class Joystick(screenSize: RectF, context: Context) : Drawable, Entity {
     override fun drawOnCanvas(bounds: RectF, surfaceHolder: Canvas, paint: Paint) =
         surfaceHolder.withSave {
             surfaceHolder.drawBitmap(bitmap, null, rect.copyOfUnderlyingRect, null)
-            //surfaceHolder.drawRect(rect.copyOfUnderlyingRect,paint)
-
-//            paint.color = Color.RED
-//            surfaceHolder.drawRect(rightZone,paint)
-//            paint.color = Color.BLUE
-//            surfaceHolder.drawRect(leftZone,paint)
-//            paint.color = Color.GREEN
-//            surfaceHolder.drawRect(upZone,paint)
-//            paint.color = Color.YELLOW
-//            surfaceHolder.drawRect(downZone,paint)
         }
 
 }

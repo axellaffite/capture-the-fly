@@ -25,10 +25,3 @@ data class MutableInputState(
 fun InputState.isShaking(accelerationReference: Vector3f) =
     acceleration.length >= (accelerationReference.length * 3f / 4f)
 
-fun InputState.isUpsideDown(angleReference: Int) = when (angleReference) {
-    0 -> angle == 180
-    90 -> angle == 270
-    180 -> angle == 0
-    270 -> angle == 90
-    else -> false
-}

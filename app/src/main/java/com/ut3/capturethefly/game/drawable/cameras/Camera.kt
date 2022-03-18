@@ -19,15 +19,6 @@ import com.ut3.capturethefly.game.utils.Vector2f
 open class Camera(private val screenPosition: RectF,val gamePosition: RectF) {
 
     /**
-     * Copy constructor to initialize a copy of the current [Camera] without having to
-     * manually copy its behavior.
-     */
-    constructor(other: Camera): this(
-        screenPosition = RectF(other.screenPosition),
-        gamePosition = RectF(other.gamePosition)
-    )
-
-    /**
      * Draw on the screen by saving and applying the current state of this camera
      * to the given [canvas].
      *

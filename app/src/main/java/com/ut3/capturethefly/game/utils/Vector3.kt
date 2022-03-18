@@ -20,7 +20,6 @@ data class Vector3i(
     override val z: Int
 ): Vector3<Int>
 
-fun Vector3i.toVector3f() = Vector3f(x = x.toFloat(), y = y.toFloat(),z = z.toFloat())
 operator fun Vector3f.times(amount: Float) = Vector3f(x * amount, y * amount, z * amount)
 
 operator fun Vector3i.times(amount: Int) = Vector3i(x * amount, y * amount, z * amount)

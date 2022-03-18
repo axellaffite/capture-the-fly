@@ -1,12 +1,12 @@
 package com.ut3.capturethefly.game.drawable.hud
 
-import android.graphics.*
-import com.ut3.capturethefly.R
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.RectF
 import com.ut3.capturethefly.game.GameView
 import com.ut3.capturethefly.game.drawable.Drawable
 import com.ut3.capturethefly.game.drawable.ImmutableRect
 import com.ut3.capturethefly.game.drawable.draw
-import com.ut3.capturethefly.game.levels.HomeLevel
 import com.ut3.capturethefly.game.logic.Entity
 import com.ut3.capturethefly.game.logic.EntityManager
 
@@ -24,8 +24,8 @@ class HUD(gameView: GameView, currentPower : () -> Float, currentHealth : () -> 
     private var fps = 0f
     val joystick = createEntity { Joystick(gameView.rect,gameView.context ) }
     val controlButtons = createEntity { ControlButtons(gameView) }
-    val chargeBar = createEntity { ChargeBar(gameView.rect,currentPower) }
-    val healthBar = createEntity { HealthBar(gameView.rect,currentHealth) }
+    private val chargeBar = createEntity { ChargeBar(gameView.rect,currentPower) }
+    private val healthBar = createEntity { HealthBar(gameView.rect,currentHealth) }
 
     override fun onLoad() = Unit
     override fun onSaveState() = Unit

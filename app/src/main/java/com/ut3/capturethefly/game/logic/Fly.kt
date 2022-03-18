@@ -19,7 +19,7 @@ class Fly(
     context: Context,
     x: Float,
     y: Float,
-    private val tiledMap: TiledMap,
+    tiledMap: TiledMap,
     private val playerPosition: () -> Vector2f,
     private val otherFlies: List<Fly>,
     private val onDie: () -> Unit

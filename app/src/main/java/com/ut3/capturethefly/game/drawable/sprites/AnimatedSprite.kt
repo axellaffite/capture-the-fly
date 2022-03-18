@@ -3,7 +3,6 @@ package com.ut3.capturethefly.game.drawable.sprites
 import android.content.Context
 import android.graphics.*
 import androidx.annotation.RawRes
-import androidx.core.graphics.withScale
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.decodeFromStream
 import com.ut3.capturethefly.game.drawable.Drawable
@@ -15,20 +14,19 @@ import com.ut3.capturethefly.game.utils.Vector2f
 abstract class AnimatedSprite(
     context: Context,
     @RawRes resource: Int,
-    private val defaultAction: String
+    defaultAction: String
 ) : Drawable, Entity {
 
-    protected val information: SpriteInformation = Yaml.default.decodeFromStream(
+    private val information: SpriteInformation = Yaml.default.decodeFromStream(
         context.resources.openRawResource(resource)
     )
 
     private val bitmap: Bitmap = context.loadBitmapKeepSize(information.metadata.resource)
     private val actions get() = information.actions
     private val tileSize = Vector2f(information.metadata.tileWidth, information.metadata.tileHeight)
-    private val tileCount get() = information.metadata.tileCount
     override var rect = ImmutableRect(0f, 0f, tileSize.x, tileSize.y); protected set
 
-    protected var currentAction: SpriteAction = actions.getValue(defaultAction); private set
+    private var currentAction: SpriteAction = actions.getValue(defaultAction); private set
     private var timeSinceLastUpdate = 0f
     protected var actionIndexOffset = 0; private set
     var isBitmapReversed = false; private set
@@ -55,10 +53,6 @@ abstract class AnimatedSprite(
         return true
     }
 
-    fun move(dx: Float, dy: Float) {
-        rect = ImmutableRect(rect.copyOfUnderlyingRect.apply { offset(dx, dy) })
-    }
-
     fun moveTo(x: Float, y: Float) {
         rect = ImmutableRect(rect.copyOfUnderlyingRect.apply { offsetTo(x, y) })
     }
@@ -68,8 +62,8 @@ abstract class AnimatedSprite(
 
         var left = tileSize.x * index
         var right = left + tileSize.x
-        var top = 0f
-        var bottom = top + tileSize.y
+        val top = 0f
+        val bottom = top + tileSize.y
 
 
         if (reverse) {

@@ -1,10 +1,8 @@
 package com.ut3.capturethefly.game
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.PorterDuff
 import android.graphics.RectF
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -12,7 +10,7 @@ import android.view.View
 import com.ut3.capturethefly.game.drawable.cameras.Camera
 import com.ut3.capturethefly.game.logic.GameLogic
 
-class GameView(context: Context, private val levelToLoad: String? = null): SurfaceView(context), SurfaceHolder.Callback {
+class GameView(context: Context): SurfaceView(context), SurfaceHolder.Callback {
     private val drawingContext = DrawingContext()
     val rect get() = RectF(0f, 0f, width.toFloat(), height.toFloat())
 
@@ -35,7 +33,7 @@ class GameView(context: Context, private val levelToLoad: String? = null): Surfa
     override fun surfaceCreated(holder: SurfaceHolder) {
         post {
             invalidate()
-            logic = GameLogic(context as Activity, this, levelToLoad = levelToLoad)
+            logic = GameLogic(this)
             logic.start()
         }
     }
@@ -61,7 +59,6 @@ class GameView(context: Context, private val levelToLoad: String? = null): Surfa
             val tmpPaint = Paint(paint)
             camera.draw(canvas, tmpPaint, block)
         }
-        fun Canvas.clear() = drawColor(0, PorterDuff.Mode.CLEAR)
     }
 }
 

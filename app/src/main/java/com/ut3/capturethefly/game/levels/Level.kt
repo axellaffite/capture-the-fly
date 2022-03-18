@@ -23,7 +23,7 @@ abstract class Level(
     protected val player = createEntity { Player(gameView, tilemap, hud) { setPosition(tilemap.initialPlayerPosition, tilemap.tileSize) } }
     protected val preferences = Preferences(gameView.context)
 
-    protected lateinit var sound: MediaPlayer
+    private lateinit var sound: MediaPlayer
 
     @CallSuper
     override fun onLoad() {

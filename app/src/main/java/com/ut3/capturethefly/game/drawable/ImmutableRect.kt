@@ -34,6 +34,4 @@ class ImmutableRect(left: Float, top: Float, right: Float, bottom: Float) {
     override fun toString() = rect.toString()
 }
 
-fun RectF.intersects(other: ImmutableRect) = other.intersects(this)
 fun RectF.contains(other: ImmutableRect) = contains(other.copyOfUnderlyingRect)
-fun Canvas.drawRect(rect: ImmutableRect, paint: Paint) = drawRect(rect.copyOfUnderlyingRect, paint)

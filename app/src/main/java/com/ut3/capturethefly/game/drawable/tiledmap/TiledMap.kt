@@ -12,7 +12,6 @@ import com.charleskorn.kaml.Yaml
 import com.ut3.capturethefly.game.drawable.Drawable
 import com.ut3.capturethefly.game.drawable.ImmutableRect
 import com.ut3.capturethefly.game.utils.Vector2i
-import com.ut3.capturethefly.game.utils.times
 import com.ut3.capturethefly.game.utils.toVector2f
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -26,12 +25,7 @@ class TiledMap(
 
     companion object {
         const val DEATH_BLOCK = 0
-        const val COLLISION_BLOCK = 1
         const val SPAWN_BLOCK = 2
-        const val LEVEL_1_BLOCK = 3
-        const val LEVEL_2_BLOCK = 4
-        const val LEVEL_3_BLOCK = 5
-        const val LEVEL_4_BLOCK = 6
     }
 
     private data class Tile(
@@ -46,9 +40,6 @@ class TiledMap(
     val height = data.height
 
     private val availableTilesets = mutableMapOf<String, Tileset>()
-    private val tileset = getOrLoadTileset(data.tileset)
-
-    val bitmap get() = tileset.bitmap
 
     private val layers = let {
 
@@ -120,8 +111,7 @@ class TiledMap(
                             )
                         }.toFloatArray(),
                         tileset = currentTileset,
-                        rect = ImmutableRect(left, top, right, bottom),
-                        chunkSize = Vector2i(data.chunkSize, data.chunkSize)
+                        rect = ImmutableRect(left, top, right, bottom)
                     )
                 }
             }
@@ -154,23 +144,6 @@ class TiledMap(
             ?: Tileset(res, data.chunkSize, data.tileSize.toInt(), context).also { availableTilesets[res] = it }
     }
 
-    fun textVerticesGivenIndex(index: Int): FloatArray {
-        return textVerticesGivenPosition(tileset.indicesIn2DForIndex(index))
-    }
-
-    fun textVerticesGivenPosition(tilePosition: Vector2i): FloatArray {
-        val (left, top) = tilePosition * tileSize
-        val (right, bottom) = (left + tileSize to top + tileSize)
-        return floatArrayOf(
-            left, top,
-            left, bottom,
-            right, top,
-            right, top,
-            left, bottom,
-            right, bottom
-        )
-    }
-
     fun collisionTilesIntersecting(rect: RectF): List<Int> {
         val coordinates = rect.times(1f / data.tileSize)
         val left = coordinates.left.toInt()
@@ -191,10 +164,6 @@ class TiledMap(
                 chunk.draw(bounds, surfaceHolder, paint)
             }
         }
-    }
-
-    fun setCollision(x: Int, y: Int, value: Int) {
-        collisions[y][x] = value
     }
 
 }

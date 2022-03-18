@@ -1,10 +1,7 @@
 package com.ut3.capturethefly.game.logic
 
-import android.app.Activity
 import com.ut3.capturethefly.game.GameView
-import com.ut3.capturethefly.game.levels.LevelFactory
 import com.ut3.capturethefly.game.levels.MainLevel
-import com.ut3.capturethefly.game.utils.Preferences
 import com.ut3.capturethefly.game.utils.SensorsListener
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -12,15 +9,7 @@ import kotlin.concurrent.schedule
 import kotlin.concurrent.thread
 
 
-class GameLogic(activity: Activity, gameView: GameView, levelToLoad: String? = null) : Logic {
-
-    companion object {
-        private const val TARGET_FPS = 30L
-        private const val FRAME_INTERVAL = 1000L / TARGET_FPS
-
-    }
-
-    private val preferences = Preferences(gameView.context)
+class GameLogic(gameView: GameView) : Logic {
     private var state = MutableInputState()
     private val sensorsListener = SensorsListener(gameView, state)
 
@@ -32,13 +21,7 @@ class GameLogic(activity: Activity, gameView: GameView, levelToLoad: String? = n
 
     private val timer = Timer()
 
-    private val level = LevelFactory.getLevel(
-        MainLevel.NAME,
-        gameView,
-        activity = activity,
-        gameLogic = this
-    )
-        ?: throw IllegalStateException("Unable to load level ${MainLevel.NAME}")
+    private val level = MainLevel(gameView)
 
     private fun generateThread() = thread(start = false) {
         gameLoop()

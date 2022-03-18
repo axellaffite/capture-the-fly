@@ -9,7 +9,6 @@ class Chunk(
     private val vertices: FloatArray,
     private val textCoordinates: FloatArray,
     private val tileset: Tileset,
-    private val chunkSize: Vector2i,
     override val rect: ImmutableRect
 ) : Drawable {
 
@@ -35,18 +34,5 @@ class Chunk(
             0,
             texture
         )
-
-//        for (y in 0 until tileset.height) {
-//            for (x in 0 until tileset.width) {
-//                val left = x * tileset.tileSize
-//                val top = y * tileset.tileSize
-//                val right = left + tileset.tileSize
-//                val bottom = top + tileset.tileSize
-//                surfaceHolder.drawRect(
-//                    Rect(left, top, right, bottom),
-//                    Paint().apply { this.style = Paint.Style.STROKE; color = Color.WHITE }
-//                )
-//            }
-//        }
     }
 }

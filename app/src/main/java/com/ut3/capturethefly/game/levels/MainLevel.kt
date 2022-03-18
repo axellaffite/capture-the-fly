@@ -27,12 +27,10 @@ class MainLevel(
 
     companion object {
         const val TILE_MAP_RESOURCE = R.raw.level
-        const val NAME = "level"
     }
 
     private val timeNeededToStun = 1f
     private var luminosityLevel  = 0f
-    private var fliesAlive = 10
     private var fliesAreStunned = false
     private val camera = createTrackingCamera(
         screenPosition = RectF(0f, 0f, gameView.width.toFloat(), gameView.height.toFloat()),
@@ -102,7 +100,7 @@ class MainLevel(
         Log.d("LUMINOSITY",luminosityLevel.toString())
     }
 
-    fun countLowLuminosityTime(delta:Float) {
+    private fun countLowLuminosityTime(delta:Float) {
         if (luminosityLevel <10) {
             timeElapsedWithLowLuminosity += delta
         } else {
@@ -110,7 +108,7 @@ class MainLevel(
         }
     }
 
-    fun stunFlies() {
+    private fun stunFlies() {
         if (timeElapsedWithLowLuminosity >= timeNeededToStun && !fliesAreStunned) {
             for (fly in flies) {
                 fly.stun(true)
