@@ -46,6 +46,11 @@ class MainLevel(
         luminosityLevel = inputState.luminosity
     }
 
+    override fun update(delta: Float) {
+        power += delta
+        super.update(delta)
+    }
+
     override fun render() {
         gameView.draw { canvas, paint ->
             val scaleFactor = ((gameView.width / tilemap.tileSize) / 12f)
