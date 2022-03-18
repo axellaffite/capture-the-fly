@@ -16,7 +16,7 @@ object LevelFactory {
     fun getLevel(levelName: String, gameView: GameView, gameLogic: GameLogic, activity: Activity): EntityManager? {
         val nextLevel = goToNextLevel(activity, gameLogic)
         return when(levelName) {
-            HomeLevel.NAME -> HomeLevel(gameView, goToScore(activity) ) { levelToLoad ->
+            HomeLevel.NAME -> HomeLevel(gameView) { levelToLoad ->
                 Handler(Looper.getMainLooper()).post {
                     gameLogic.stop()
 
@@ -30,8 +30,10 @@ object LevelFactory {
                 }
             }
 
+            MainLevel.NAME -> MainLevel(gameView)
 
-            IntroductionLevel.NAME -> IntroductionLevel(gameView, nextLevel)
+
+            IntroductionLevel.NAME -> IntroductionLevel(gameView)
 
             else -> null
         }

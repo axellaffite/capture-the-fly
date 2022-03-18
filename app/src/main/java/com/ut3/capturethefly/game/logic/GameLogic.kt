@@ -3,6 +3,7 @@ package com.ut3.capturethefly.game.logic
 import android.app.Activity
 import com.ut3.capturethefly.game.GameView
 import com.ut3.capturethefly.game.levels.LevelFactory
+import com.ut3.capturethefly.game.levels.MainLevel
 import com.ut3.capturethefly.game.utils.Preferences
 import com.ut3.capturethefly.game.utils.SensorsListener
 import java.util.*
@@ -32,12 +33,12 @@ class GameLogic(activity: Activity, gameView: GameView, levelToLoad: String? = n
     private val timer = Timer()
 
     private val level = LevelFactory.getLevel(
-        levelToLoad ?: preferences.currentLevel,
+        MainLevel.NAME,
         gameView,
         activity = activity,
         gameLogic = this
     )
-        ?: throw IllegalStateException("Unable to load level ${preferences.currentLevel}")
+        ?: throw IllegalStateException("Unable to load level ${MainLevel.NAME}")
 
     private fun generateThread() = thread(start = false) {
         gameLoop()

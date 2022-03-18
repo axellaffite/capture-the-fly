@@ -1,4 +1,4 @@
-package com.ut3.capturethefly.game.levels.introduction
+package com.ut3.capturethefly.game.levels
 
 import android.graphics.Color
 import android.graphics.Paint
@@ -8,12 +8,9 @@ import androidx.core.graphics.withScale
 import com.ut3.capturethefly.R
 import com.ut3.capturethefly.game.GameView
 import com.ut3.capturethefly.game.drawable.cameras.createTrackingCamera
-import com.ut3.capturethefly.game.levels.Level
-import com.ut3.capturethefly.game.logic.InputState
 
-
-class IntroductionLevel(
-    gameView: GameView
+class MainLevel(
+    gameView : GameView
 ) : Level(
     gameView = gameView,
     soundRes = R.raw.ambiance_sound,
@@ -21,26 +18,12 @@ class IntroductionLevel(
 ) {
 
     companion object {
-        const val TILE_MAP_RESOURCE = R.raw.testmap
-        const val NAME = "introduction"
+        const val TILE_MAP_RESOURCE = R.raw.level
+        const val NAME = "level"
     }
 
-    private val luminosityReference = preferences.luminosityReference
-    private val threshold = luminosityReference / 2
-    private val score = 25
-
-    private var luminosityLevel = 0f
-    private var nightAlpha = 0
-    private var nextLevelLoaded = false
-
-    private val bridge = createEntity {
-        Bridge(x = 27, y = 25, blockCount = 10, tilemap = tilemap, player = player)
-    }
-
-    private val lever = createEntity {
-        Lever(gameView, hud, player, bridge, ::nightAlpha) {
-            moveTo(352f, 384f)
-        }
+    init {
+        player.move(tilemap.rect.width/2.toFloat(),tilemap.rect.height/2.toFloat())
     }
 
     private val camera = createTrackingCamera(
@@ -51,24 +34,6 @@ class IntroductionLevel(
 
     override fun onSaveState() {
         TODO("save state of the level")
-    }
-
-    override fun handleInput(inputState: InputState) {
-        super.handleInput(inputState)
-        luminosityLevel = inputState.luminosity
-    }
-
-    override fun update(delta: Float) {
-        super.update(delta)
-
-        val rawAlpha = (threshold - (luminosityLevel * 4f / 3f)).coerceAtLeast(0f)
-        nightAlpha = (rawAlpha * (255f / threshold)).toInt()
-
-        if (player.isTouchingLevel2) {
-            val s = score - 5 * player.deathNumber
-            preferences.scoreLevelOne = if (s >= 0) s else 0
-            nextLevelLoaded = true
-        }
     }
 
     override fun render() {
@@ -88,7 +53,6 @@ class IntroductionLevel(
 
                     canvas.draw(tilemap, paint)
                     canvas.draw(player, paint)
-                    canvas.draw(bridge, paint)
 
                     canvas.drawRect(
                         0f,
@@ -97,16 +61,12 @@ class IntroductionLevel(
                         canvas.height.toFloat(),
                         Paint().apply {
                             color = 0
-                            alpha = nightAlpha
                         }
                     )
-
-                    canvas.draw(lever, paint)
                 }
             }
 
             hud.draw(gameView.rect, canvas, paint)
         }
     }
-
 }
