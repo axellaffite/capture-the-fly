@@ -33,18 +33,17 @@ class Fly(
     private var horizontalMovement = Joystick.Movement.None
 
     val attackRect: ImmutableRect get() {
-        return when {
-            !isAttacking -> ImmutableRect()
-            lastDirection == Joystick.Movement.Left -> {
+        return when (lastDirection) {
+            Joystick.Movement.Left -> {
                 ImmutableRect(rect.left , rect.top, rect.centerX, rect.bottom)
             }
-            lastDirection == Joystick.Movement.Right -> {
+            Joystick.Movement.Right -> {
                 ImmutableRect(rect.centerX, rect.top, rect.right, rect.bottom)
             }
-            lastDirection == Joystick.Movement.Up -> {
+            Joystick.Movement.Up -> {
                 ImmutableRect(rect.left, rect.top, rect.right, rect.centerY)
             }
-            lastDirection == Joystick.Movement.Down -> {
+            Joystick.Movement.Down -> {
                 ImmutableRect(rect.left , rect.centerY, rect.right , rect.bottom)
             }
             else -> ImmutableRect()
@@ -86,13 +85,23 @@ class Fly(
 
         moveX(delta)
         moveY(delta)
+
         if(!isDead){
             isAttacking = isAttacking && !isAnimationFinished
             when (horizontalMovement) {
-                Joystick.Movement.Left -> setAction("fly", reverse = true)
-                else -> setAction("fly", reverse = false)
+                Joystick.Movement.Left -> if (isAttacking) {
+                    setAction("attack", reverse = true)
+                } else {
+                    setAction("fly", reverse = true)
+                }
+                else -> if (isAttacking) {
+                    setAction("attack", reverse = true)
+                } else {
+                    setAction("fly", reverse = true)
+                }
             }
         }
+
     }
 
     private fun moveX(delta: Float) {
