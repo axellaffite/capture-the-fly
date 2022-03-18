@@ -36,6 +36,7 @@ class Player(
     private var isRunning = false
     private var verticalMovement = Joystick.Movement.None
     private var horizontalMovement = Joystick.Movement.None
+    private var lastDirection = Joystick.Movement.Down
     private var isDead = false
     private var reactToEnvironment = true
     private var isUpsideDown = false
@@ -71,6 +72,12 @@ class Player(
 
             verticalMovement = hud.joystick.verticalDirection
             horizontalMovement = hud.joystick.horizontalDirection
+            if(verticalMovement != Joystick.Movement.None){
+                lastDirection = verticalMovement
+            }
+            if(horizontalMovement != Joystick.Movement.None){
+                lastDirection = horizontalMovement
+            }
         }
     }
 
@@ -149,6 +156,27 @@ class Player(
         }
 
         // TODO play correct animation here
+        setAction(verticalMovement.getAction("idle",lastDirection))
+        /*when (verticalMovement) {
+            Joystick.Movement.Right -> setAction("walk_right")
+            Joystick.Movement.Left -> setAction("walk_left")
+            Joystick.Movement.None -> {
+                when (lastDirection) {
+                    Joystick.Movement.Right -> setAction("idle_right")
+                    Joystick.Movement.Left -> setAction("idle_left")
+                    Joystick.Movement.Up -> setAction("idle_right")
+                    Joystick.Movement.Bottom -> setAction("idle_left")
+                }
+                setAction("idle_up")
+            }
+        }
+        when (horizontalMovement) {
+            Joystick.Movement.Up -> setAction("walk_up")
+            Joystick.Movement.Down -> setAction("walk_bottom")
+            Joystick.Movement.None -> {
+                setAction("idle_up")
+            }/
+        }*/
 //        when (movement) {
 //            Joystick.Movement.Right -> run()
 //            Joystick.Movement.Left -> run(reverse = true)
