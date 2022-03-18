@@ -56,6 +56,7 @@ class MainLevel(
     private var launchNextWave = false
     private var text = "Wave 1"
     private var textOpacity = 255f
+    private var playerIsDead = false
 
     private val random = Random(System.currentTimeMillis())
 
@@ -139,8 +140,12 @@ class MainLevel(
         val playerRect = player.collisionRect
         for (fly in flies) {
             if(fly.attackRect.intersects(playerRect)){
-                fly.attack()
-                player.takeDamage()
+                if (fly.attack()) {
+                    playerIsDead = player.takeDamage()
+                    if(playerIsDead){
+                        reset()
+                    }
+                }
             }
         }
         println("camera :"+camera.gamePosition)
@@ -154,6 +159,10 @@ class MainLevel(
         }
 
         textOpacity = (textOpacity - (255 / 3) * delta).coerceAtLeast(0f)
+    }
+
+    private fun reset() {
+        TODO("bonjour")
     }
 
     override fun postUpdate(delta: Float) {

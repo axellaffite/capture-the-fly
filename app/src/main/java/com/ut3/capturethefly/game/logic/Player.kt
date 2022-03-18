@@ -136,10 +136,10 @@ class Player(
 
     fun die() {
         if (!isDead) {
+            setAction("die")
             deathNumber++
             reactToEnvironment = false
             isDead = true
-            setAction("hit", isBitmapReversed)
         }
     }
 
@@ -212,14 +212,16 @@ class Player(
         rect = ImmutableRect(left, top, right, bottom)
     }
 
-    fun takeDamage() {
+    fun takeDamage() : Boolean {
         if (invincible <= 0f) {
             invincible = 1f
             health -= 0.2f
             if(health <= 0f){
                 die()
+                return true
             }
         }
+        return false
     }
 
     fun gatherPower(delta: Float) {
