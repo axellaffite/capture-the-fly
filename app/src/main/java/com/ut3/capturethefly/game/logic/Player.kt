@@ -40,7 +40,7 @@ class Player(
     private var invincible = 0f
 
     var power = 0f
-    var health = 1f; private set
+    var health = 1f; private set (value) { field = value.coerceAtMost(1f) }
 
 
     var dx = 0f
@@ -226,5 +226,9 @@ class Player(
 
     fun gatherPower(delta: Float) {
         power += delta * 0.03f
+    }
+
+    fun gatherHealth(delta: Float) {
+        health += delta * 0.03f
     }
 }

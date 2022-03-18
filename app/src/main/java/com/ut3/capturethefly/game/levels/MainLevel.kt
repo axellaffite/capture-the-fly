@@ -30,10 +30,6 @@ class MainLevel(
         const val NAME = "level"
     }
 
-    init {
-        player.move(tilemap.rect.width/2.toFloat(),tilemap.rect.height/2.toFloat())
-    }
-
     private val timeNeededToStun = 1f
     private var luminosityLevel  = 0f
     private var fliesAlive = 10
@@ -58,14 +54,36 @@ class MainLevel(
     private var textOpacity = 255f
     private var playerIsDead = false
 
+    private var shouldReset = false
+
     private val random = Random(System.currentTimeMillis())
 
     init {
-        launchNextWave()
+        reset()
     }
 
     override fun onSaveState() {
         TODO("save state of the level")
+    }
+
+    private fun reset() {
+        timeElapsedWithLowLuminosity = 0f
+        remainingFlies = 0
+        targetFlies = 10
+        spawnInterval = 3f
+        lastFly = 0f
+        flies.clear()
+        isShaking = false
+
+        currentWave = 0
+        launchNextWave = false
+        text = "Wave 1"
+        textOpacity = 255f
+        playerIsDead = false
+
+        player.move(tilemap.rect.width/2.toFloat(),tilemap.rect.height/2.toFloat())
+
+        launchNextWave()
     }
 
     override fun handleInput(inputState: InputState) {
@@ -107,11 +125,18 @@ class MainLevel(
     }
 
     override fun update(delta: Float) {
-        player.gatherPower(delta)
         super.update(delta)
+
+        if (shouldReset) {
+            shouldReset = false
+            reset()
+        }
+
+        player.gatherPower(delta)
 
         lastFly += delta
         if (lastFly >= spawnInterval && flies.size < targetFlies) {
+
             flies.add(
                 createEntity {
                     Fly(
@@ -143,12 +168,11 @@ class MainLevel(
                 if (fly.attack()) {
                     playerIsDead = player.takeDamage()
                     if(playerIsDead){
-                        reset()
+                        shouldReset = true
                     }
                 }
             }
         }
-        println("camera :"+camera.gamePosition)
         if (isShaking && player.power >= 1f ){
             player.power = 0f
             flies.forEach {
@@ -159,10 +183,7 @@ class MainLevel(
         }
 
         textOpacity = (textOpacity - (255 / 3) * delta).coerceAtLeast(0f)
-    }
-
-    private fun reset() {
-        TODO("bonjour")
+        player.gatherHealth(delta)
     }
 
     override fun postUpdate(delta: Float) {
