@@ -27,9 +27,30 @@ class Fly(
     private val speed = tiledMap.tileSize
     override var rect = ImmutableRect(x, y, x+24f, y+24f)
     private var isDead = false
+    private var isAttacking = false
+    private var lastDirection = Joystick.Movement.Down
 
     private var verticalMovement = Joystick.Movement.None
     private var horizontalMovement = Joystick.Movement.None
+
+    val attackRect: ImmutableRect get() {
+        return when {
+            !isAttacking -> ImmutableRect()
+            lastDirection == Joystick.Movement.Left -> {
+                ImmutableRect(rect.left , rect.top, rect.centerX, rect.bottom)
+            }
+            lastDirection == Joystick.Movement.Right -> {
+                ImmutableRect(rect.centerX, rect.top, rect.right, rect.bottom)
+            }
+            lastDirection == Joystick.Movement.Up -> {
+                ImmutableRect(rect.left, rect.top, rect.right, rect.centerY)
+            }
+            lastDirection == Joystick.Movement.Down -> {
+                ImmutableRect(rect.left , rect.centerY, rect.right , rect.bottom)
+            }
+            else -> ImmutableRect()
+        }
+    }
 
     override fun handleInput(inputState: InputState) {
         super<AnimatedSprite>.handleInput(inputState)
@@ -47,6 +68,13 @@ class Fly(
             positionToReach.x > currentPosition.x -> Joystick.Movement.Right
             else -> Joystick.Movement.None
         }
+
+        if(verticalMovement != Joystick.Movement.None){
+            lastDirection = verticalMovement
+        }
+        if(horizontalMovement != Joystick.Movement.None){
+            lastDirection = horizontalMovement
+        }
     }
 
     override fun update(delta: Float) {
@@ -59,8 +87,8 @@ class Fly(
 
         moveX(delta)
         moveY(delta)
-
         if(!isDead){
+            isAttacking = isAttacking && !isAnimationFinished
             when (horizontalMovement) {
                 Joystick.Movement.Left -> setAction("fly", reverse = true)
                 else -> setAction("fly", reverse = false)
@@ -107,6 +135,11 @@ class Fly(
             onDie()
 
         }
+    }
+
+    fun attack(){
+        setAction("attack")
+        isAttacking = true
     }
 
     override fun drawOnCanvas(bounds: RectF, surfaceHolder: Canvas, paint: Paint) {

@@ -37,12 +37,16 @@ class Player(
     private var isDead = false
     private var reactToEnvironment = true
     private var isUpsideDown = false
+    private var invincible = 0f
+
+    var power = 0f; private set
+    var health = 100f; private set
 
 
     var dx = 0f
     var dy = 0f
 
-    private val collisionRect get() = RectF(rect.left + 9f, rect.top+9f, rect.right - 9f, rect.bottom-9f)
+    val collisionRect get() = RectF(rect.left + 9f, rect.top+9f, rect.right - 9f, rect.bottom-9f)
     val attackRect: ImmutableRect get() {
         return when {
             !isAttacking -> ImmutableRect()
@@ -99,6 +103,7 @@ class Player(
     }
 
     override fun update(delta: Float) {
+        invincible -= delta
         val lastSprite = actionIndexOffset
         super<AnimatedSprite>.update(delta)
         if (shouldBeDead()) {
@@ -205,5 +210,16 @@ class Player(
         val right = left + rect.width
 
         rect = ImmutableRect(left, top, right, bottom)
+    }
+
+    fun takeDamage() {
+        if (invincible <= 0f) {
+            invincible = 1f
+            health -= 0.2f
+        }
+    }
+
+    fun gatherPower(delta: Float) {
+        power += delta * 0.2f
     }
 }

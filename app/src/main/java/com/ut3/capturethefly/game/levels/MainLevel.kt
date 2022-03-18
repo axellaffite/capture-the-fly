@@ -57,7 +57,7 @@ class MainLevel(
     }
 
     override fun update(delta: Float) {
-        power += delta
+        player.gatherPower(delta)
         super.update(delta)
 
         lastFly += delta
@@ -79,6 +79,14 @@ class MainLevel(
             )
 
             lastFly = 0f
+        }
+
+        val playerRect = player.collisionRect
+        for (fly in flies) {
+            if(fly.attackRect.intersects(playerRect)){
+                fly.attack()
+                player.takeDamage()
+            }
         }
     }
 
