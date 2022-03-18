@@ -29,7 +29,7 @@ class Player(
     var deathNumber = 0
 
     companion object {
-        const val SPEED = 12f
+        const val SPEED = 6f
     }
 
     private val runSound = MediaPlayer.create(gameView.context, R.raw.feet_49)
@@ -44,7 +44,7 @@ class Player(
     var dx = 0f
     var dy = 0f
 
-    private val collisionRect get() = RectF(rect.left + 5f, rect.top, rect.right - 5f, rect.bottom)
+    private val collisionRect get() = RectF(rect.left + 9f, rect.top+9f, rect.right - 9f, rect.bottom-9f)
 
     init {
         reset()
