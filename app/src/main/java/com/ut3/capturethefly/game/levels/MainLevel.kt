@@ -29,6 +29,7 @@ class MainLevel(
     }
 
     private var luminosityLevel  = 0f
+    private var fliesAlive = 10
     private val camera = createTrackingCamera(
         screenPosition = RectF(0f, 0f, gameView.width.toFloat(), gameView.height.toFloat()),
         gamePosition = RectF(0f, 0f, gameView.width.toFloat(), gameView.height.toFloat()),
@@ -46,6 +47,11 @@ class MainLevel(
         super.handleInput(inputState)
         if(hud.controlButtons.isAPressed){
             player.attack()
+            flies.forEach {
+                if (player.rect.intersects(it.rect)){
+                    it.die()
+                }
+            }
         }
         luminosityLevel = inputState.luminosity
     }
@@ -53,7 +59,6 @@ class MainLevel(
     override fun update(delta: Float) {
         super.update(delta)
 
-        println(lastFly)
         lastFly += delta
         if (lastFly >= 0.5 && flies.size < 10) {
             flies.add(
@@ -64,13 +69,15 @@ class MainLevel(
                         y = player.rect.top + 50f,
                         tiledMap = tilemap,
                         player::center,
-                        flies
+                        flies,
+                        onDie = {
+                            fliesAlive--;
+                        }
                     )
                 }
             )
 
             lastFly = 0f
-            println("added")
         }
     }
 
