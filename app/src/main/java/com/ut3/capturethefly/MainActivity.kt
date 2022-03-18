@@ -3,7 +3,6 @@ package com.ut3.capturethefly
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
-import com.ut3.hiddendoor.BaseActivity
 import com.ut3.capturethefly.game.GameView
 
 class MainActivity : BaseActivity() {
