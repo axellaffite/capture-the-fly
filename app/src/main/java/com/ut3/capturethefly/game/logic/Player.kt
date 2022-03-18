@@ -43,22 +43,22 @@ class Player(
     var dy = 0f
 
     private val collisionRect get() = RectF(rect.left + 9f, rect.top+9f, rect.right - 9f, rect.bottom-9f)
-    private val attackRect: RectF get() {
+    val attackRect: ImmutableRect get() {
         return when {
-            !isAttacking -> RectF()
+            !isAttacking -> ImmutableRect()
             lastDirection == Joystick.Movement.Left -> {
-                RectF(rect.left , rect.top, rect.centerX, rect.bottom)
+                ImmutableRect(rect.left , rect.top, rect.centerX, rect.bottom)
             }
             lastDirection == Joystick.Movement.Right -> {
-                RectF(rect.centerX, rect.top, rect.right, rect.bottom)
+                ImmutableRect(rect.centerX, rect.top, rect.right, rect.bottom)
             }
             lastDirection == Joystick.Movement.Up -> {
-                RectF(rect.left, rect.top, rect.right, rect.centerY)
+                ImmutableRect(rect.left, rect.top, rect.right, rect.centerY)
             }
             lastDirection == Joystick.Movement.Down -> {
-                RectF(rect.left , rect.centerY, rect.right , rect.bottom)
+                ImmutableRect(rect.left , rect.centerY, rect.right , rect.bottom)
             }
-            else -> RectF()
+            else -> ImmutableRect()
         }
     }
 

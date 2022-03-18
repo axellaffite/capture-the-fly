@@ -48,7 +48,7 @@ class MainLevel(
         if(hud.controlButtons.isAPressed){
             player.attack()
             flies.forEach {
-                if (player.rect.intersects(it.rect)){
+                if (player.attackRect.intersects(it.rect)){
                     it.die()
                 }
             }
