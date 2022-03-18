@@ -1,31 +1,63 @@
 metadata:
-  resource: character_24x18
-  tileWidth: 24
-  tileHeight: 18
-  tileCount: 24
+  resource: attack_idle_walk
+  tileWidth: 32
+  tileHeight: 32
+  tileCount: 32
 
 actions:
-  idle:
+  attack_down:
     index: 0
     count: 4
-    time: 0.2
-  walk:
+    time: 0.5
+    loop: false
+  attack_left:
     index: 4
-    count: 6
-    time: 0.1
-  kick:
-    index: 10
-    count: 3
-    time: 0.1
-  hit:
-    index: 13
     count: 4
-    time: 0.1
-  run:
-    index: 17
-    count: 7
-    time: 0.1
-  jump:
-    index: 17
-    count : 1
-    time : 0.1
+    time: 0.5
+    loop: false
+  attack_right:
+    index: 8
+    count: 4
+    time: 0.5
+    loop: false
+  attack_up:
+    index: 12
+    count: 4
+    time: 0.5
+    loop: false
+  idle_down:
+    index: 16
+    count: 4
+    time: 0.2
+  idle_left:
+    index: 20
+    count: 4
+    time: 0.2
+  idle_right:
+    index: 24
+    count: 4
+    time: 0.2
+  idle_up:
+    index: 28
+    count: 4
+    time: 0.2
+  walk_down:
+    index: 32
+    count: 4
+    time: 0.2
+    loop: false
+  walk_left:
+    index: 36
+    count: 4
+    time: 0.2
+    loop: false
+  walk_right:
+    index: 40
+    count: 4
+    time: 0.2
+    loop: false
+  walk_up:
+    index: 44
+    count: 4
+    time: 0.2
+    loop: false

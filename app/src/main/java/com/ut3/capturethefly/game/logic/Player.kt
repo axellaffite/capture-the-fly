@@ -24,7 +24,7 @@ class Player(
     private val configuration: Player.() -> Unit = {}
 ): Entity,
     Drawable,
-    AnimatedSprite(gameView.context, R.raw.character, "idle")
+    AnimatedSprite(gameView.context, R.raw.character, "idle_up")
 {
 
     var deathNumber = 0
