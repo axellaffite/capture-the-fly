@@ -3,6 +3,7 @@ package com.ut3.capturethefly.game.levels
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.util.Log
 import android.graphics.Typeface
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.withClip
@@ -12,7 +13,7 @@ import com.ut3.capturethefly.game.GameView
 import com.ut3.capturethefly.game.drawable.cameras.createTrackingCamera
 import com.ut3.capturethefly.game.logic.Fly
 import com.ut3.capturethefly.game.logic.InputState
-
+import com.ut3.capturethefly.game.logic.isShaking
 
 class MainLevel(
     gameView : GameView
@@ -31,18 +32,23 @@ class MainLevel(
         player.move(tilemap.rect.width/2.toFloat(),tilemap.rect.height/2.toFloat())
     }
 
+    private val timeNeededToStun = 1f
     private var luminosityLevel  = 0f
+    private var fliesAlive = 10
+    private var fliesAreStunned = false
     private val camera = createTrackingCamera(
         screenPosition = RectF(0f, 0f, gameView.width.toFloat(), gameView.height.toFloat()),
         gamePosition = RectF(0f, 0f, gameView.width.toFloat(), gameView.height.toFloat()),
         track = player::center
     )
 
+    private var timeElapsedWithLowLuminosity = 0f
     private var remainingFlies = 0
     private var targetFlies = 10
     private var spawnInterval = 3f
     private var lastFly = 0f
     private val flies = mutableListOf<Fly>()
+    private var isShaking = false
 
     private var currentWave = 0
     private var launchNextWave = false
@@ -68,6 +74,31 @@ class MainLevel(
             }
         }
         luminosityLevel = inputState.luminosity
+        isShaking = inputState.isShaking(preferences.accelerationReference)
+        Log.d("LUMINOSITY",luminosityLevel.toString())
+    }
+
+    fun countLowLuminosityTime(delta:Float) {
+        if (luminosityLevel <10) {
+            timeElapsedWithLowLuminosity += delta
+        } else {
+            timeElapsedWithLowLuminosity = 0f
+        }
+    }
+
+    fun stunFlies() {
+        if (timeElapsedWithLowLuminosity >= timeNeededToStun && !fliesAreStunned) {
+            for (fly in flies) {
+                fly.stun(true)
+            }
+            fliesAreStunned = true
+        }
+        if (timeElapsedWithLowLuminosity <= timeNeededToStun && fliesAreStunned) {
+            for (fly in flies) {
+                fly.stun(false)
+            }
+            fliesAreStunned = false
+        }
     }
 
     override fun update(delta: Float) {
@@ -98,11 +129,23 @@ class MainLevel(
             lastFly = 0f
         }
 
+        countLowLuminosityTime(delta)
+        stunFlies()
+
         val playerRect = player.collisionRect
         for (fly in flies) {
             if(fly.attackRect.intersects(playerRect)){
                 fly.attack()
                 player.takeDamage()
+            }
+        }
+        println("camera :"+camera.gamePosition)
+        if (isShaking && player.power >= 1f ){
+            player.power = 0f
+            flies.forEach {
+                if (it.rect.intersects(camera.gamePosition)) {
+                    it.die()
+                }
             }
         }
 
@@ -134,9 +177,11 @@ class MainLevel(
             val scaleFactor = ((gameView.width / tilemap.tileSize) / 12f)
             val (pivotX, pivotY) = gameView.width / 2f to gameView.height / 2f
 
+
             canvas.drawColor(Color.parseColor("#34202b"))
 
             canvas.withScale(x = scaleFactor, y = scaleFactor, pivotX = pivotX, pivotY = pivotY) {
+
                 withCamera(camera) { canvas, paint ->
                     canvas.withClip(tilemap.rect.copyOfUnderlyingRect) {
                         canvas.drawColor(Color.BLUE)
