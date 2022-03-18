@@ -9,6 +9,7 @@ import com.ut3.capturethefly.R
 import com.ut3.capturethefly.game.GameView
 import com.ut3.capturethefly.game.drawable.cameras.createTrackingCamera
 import com.ut3.capturethefly.game.levels.Level
+import com.ut3.capturethefly.game.logic.Fly
 import com.ut3.capturethefly.game.logic.InputState
 
 
@@ -42,6 +43,11 @@ class IntroductionLevel(
             moveTo(352f, 384f)
         }
     }
+
+    private val fly = createEntity { Fly(
+        gameView.context, player.center.x + 100f, player.center.y + 100f,
+        tilemap, player::center
+    ) }
 
     private val camera = createTrackingCamera(
         screenPosition = RectF(0f, 0f, gameView.width.toFloat(), gameView.height.toFloat()),
@@ -82,6 +88,7 @@ class IntroductionLevel(
 
                     canvas.draw(tilemap, paint)
                     canvas.draw(player, paint)
+                    canvas.draw(fly, paint)
                     canvas.draw(bridge, paint)
 
                     canvas.drawRect(
