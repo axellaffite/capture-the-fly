@@ -10,6 +10,7 @@ import com.ut3.capturethefly.game.GameView
 import com.ut3.capturethefly.game.drawable.cameras.createTrackingCamera
 import com.ut3.capturethefly.game.logic.Fly
 import com.ut3.capturethefly.game.logic.InputState
+import com.ut3.capturethefly.game.logic.isShaking
 
 class MainLevel(
     gameView : GameView
@@ -38,6 +39,7 @@ class MainLevel(
 
     private var lastFly = 0f
     private val flies = mutableListOf<Fly>()
+    private var isShaking = false
 
     override fun onSaveState() {
         TODO("save state of the level")
@@ -54,6 +56,7 @@ class MainLevel(
             }
         }
         luminosityLevel = inputState.luminosity
+        isShaking = inputState.isShaking(preferences.accelerationReference)
     }
 
     override fun update(delta: Float) {
@@ -86,6 +89,14 @@ class MainLevel(
             if(fly.attackRect.intersects(playerRect)){
                 fly.attack()
                 player.takeDamage()
+            }
+        }
+        if (isShaking && player.power >= 1f ){
+            player.power = 0f
+            flies.forEach {
+                if (it.rect.intersects(camera.gamePosition)) {
+                    it.die()
+                }
             }
         }
     }
