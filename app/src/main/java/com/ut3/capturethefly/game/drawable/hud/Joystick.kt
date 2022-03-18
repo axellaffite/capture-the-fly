@@ -13,7 +13,7 @@ import com.ut3.capturethefly.game.logic.InputState
 
 class Joystick(screenSize: RectF, context: Context) : Drawable, Entity {
 
-    enum class Movement { Left, Right, None }
+    enum class Movement { Left, Right,Up,Down, None }
 
     private val bitmap: Bitmap = context.loadBitmapKeepSize("direction_button")
 

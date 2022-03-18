@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Capture The Fly</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="sensor_activity_title">Before you can play, we have to configure some things</string>
+    <string name="sensor_activity_luminosity_text">First, make sure you play the game in a place with a comfortable level of luminosity, not too high, not too low</string>
+    <string name="sensor_activity_done_text">Done</string>
+    <string name="sensor_activity_orientation_text">Then, hold your phone in a comfortable position and of course, horizontally</string>
+    <string name="activity_sensor_shake_text">Then, click on the button bellow, and shake you phone during the record</string>
+    <string name="activity_sensor_record">Record</string>
+    <string name="activity_sensor_play_text">Play</string>
+    <string name="activity_sensor_record_again_text">Record again</string>
 </resources>
