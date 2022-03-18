@@ -39,7 +39,7 @@ class Player(
     private var isUpsideDown = false
     private var invincible = 0f
 
-    var power = 0f; private set
+    var power = 0f
     var health = 100f; private set
 
 
@@ -220,6 +220,6 @@ class Player(
     }
 
     fun gatherPower(delta: Float) {
-        power += delta * 0.2f
+        power += delta * 0.03f
     }
 }

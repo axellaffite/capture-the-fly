@@ -16,7 +16,7 @@ import com.ut3.capturethefly.game.utils.Vector2f
  * @property screenPosition position of the camera on the screen
  * @property gamePosition position of the camera in the game
  */
-open class Camera(private val screenPosition: RectF, private val gamePosition: RectF) {
+open class Camera(private val screenPosition: RectF,val gamePosition: RectF) {
 
     /**
      * Copy constructor to initialize a copy of the current [Camera] without having to

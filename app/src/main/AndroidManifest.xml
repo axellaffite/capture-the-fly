@@ -16,18 +16,17 @@
             android:theme="@style/Theme.CaptureTheFly.NoActionBar"
             android:screenOrientation="landscape">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"></action>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
-            android:name=".ScoreActivity"
+            android:name=".SensorActivity"
             android:exported="true"
             android:theme="@style/Theme.CaptureTheFly.NoActionBar"
             android:screenOrientation="landscape">
             <intent-filter>
-
+                <action android:name="android.intent.action.MAIN"></action>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

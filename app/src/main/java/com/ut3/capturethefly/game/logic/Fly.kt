@@ -15,6 +15,7 @@ import com.ut3.capturethefly.game.utils.Vector2f
 import kotlin.math.abs
 
 class Fly(
+
     context: Context,
     x: Float,
     y: Float,
@@ -23,28 +24,30 @@ class Fly(
     private val otherFlies: List<Fly>,
     private val onDie: () -> Unit
 ): Entity, Drawable, AnimatedSprite(context, R.raw.fly, "fly") {
-    private val speed = tiledMap.tileSize
+
+    val maxSpeed = tiledMap.tileSize
+    var currentSpeed = maxSpeed
     override var rect = ImmutableRect(x, y, x+24f, y+24f)
     private var isDead = false
     private var isAttacking = false
+    private var isStunned = false
     private var lastDirection = Joystick.Movement.Down
 
     private var verticalMovement = Joystick.Movement.None
     private var horizontalMovement = Joystick.Movement.None
 
     val attackRect: ImmutableRect get() {
-        return when {
-            !isAttacking -> ImmutableRect()
-            lastDirection == Joystick.Movement.Left -> {
+        return when (lastDirection) {
+            Joystick.Movement.Left -> {
                 ImmutableRect(rect.left , rect.top, rect.centerX, rect.bottom)
             }
-            lastDirection == Joystick.Movement.Right -> {
+            Joystick.Movement.Right -> {
                 ImmutableRect(rect.centerX, rect.top, rect.right, rect.bottom)
             }
-            lastDirection == Joystick.Movement.Up -> {
+            Joystick.Movement.Up -> {
                 ImmutableRect(rect.left, rect.top, rect.right, rect.centerY)
             }
-            lastDirection == Joystick.Movement.Down -> {
+            Joystick.Movement.Down -> {
                 ImmutableRect(rect.left , rect.centerY, rect.right , rect.bottom)
             }
             else -> ImmutableRect()
@@ -80,25 +83,37 @@ class Fly(
         super<AnimatedSprite>.update(delta)
 
         rect.copyOfUnderlyingRect.offset(
-            horizontalMovement.delta * speed * delta,
-            verticalMovement.delta * speed * delta
+            horizontalMovement.delta * currentSpeed * delta,
+            verticalMovement.delta * currentSpeed * delta
         )
 
         moveX(delta)
         moveY(delta)
-        if(!isDead){
+
+        if(!isDead) {
             isAttacking = isAttacking && !isAnimationFinished
-            when (horizontalMovement) {
-                Joystick.Movement.Left -> setAction("fly", reverse = true)
-                else -> setAction("fly", reverse = false)
+            if (!isStunned) {
+                when (horizontalMovement) {
+                    Joystick.Movement.Left -> if (isAttacking) {
+                        setAction("attack", reverse = true)
+                    } else {
+                        setAction("fly", reverse = true)
+                    }
+                    else -> if (isAttacking) {
+                        setAction("attack", reverse = true)
+                    } else {
+                        setAction("fly", reverse = true)
+                    }
+                }
             }
         }
+
     }
 
     private fun moveX(delta: Float) {
         val tmp = rect.copyOfUnderlyingRect.apply {
             offset(
-                horizontalMovement.delta * speed * delta,
+                horizontalMovement.delta * currentSpeed * delta,
                 0f
             )
         }
@@ -112,7 +127,7 @@ class Fly(
         val tmp = rect.copyOfUnderlyingRect.apply {
             offset(
                 0f,
-                verticalMovement.delta * speed * delta,
+                verticalMovement.delta * currentSpeed * delta,
             )
         }
 
@@ -133,6 +148,19 @@ class Fly(
             isDead = true
             onDie()
 
+        }
+    }
+
+    fun stun(isStunned : Boolean) {
+        if (!isDead) {
+            if (isStunned) {
+                currentSpeed = 0f
+                this.isStunned = true
+                setAction("stun")
+            } else {
+                currentSpeed = maxSpeed
+                this.isStunned = false
+            }
         }
     }
 
